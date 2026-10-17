@@ -1,0 +1,159 @@
+{
+  "id": "demo-45",
+  "marca": "Demonstração do kit · modelo de uma peça só",
+  "nome": "Iate 45 m",
+  "medidas": "45 m · uma malha só com textura: zonas pela forma, cor por cima da textura",
+  "creditos": "Modelo «Yacht» de Sergei, CC-BY-4.0 (Sketchfab). Preços de demonstração.",
+  "modelo": "../modelos/sergei.glb",
+  "preco": {
+    "base": 24000000,
+    "moeda": "EUR",
+    "nota": "Preços de demonstração"
+  },
+  "ambienteInicial": "mar",
+  "linhaDeAgua": 0.075,
+  "zonas": {
+    "antivegetativa": {
+      "forma": {
+        "ate": 0.085
+      },
+      "acabamento": "mate",
+      "tingir": true
+    },
+    "casco": {
+      "forma": {
+        "ate": [
+          0.27,
+          0.33
+        ],
+        "normal": "lado"
+      },
+      "acabamento": "gelcoat",
+      "tingir": true
+    },
+    "superestrutura": {
+      "forma": {
+        "desde": 0.2
+      },
+      "acabamento": "gelcoat",
+      "tingir": true
+    }
+  },
+  "passos": [
+    {
+      "id": "exterior",
+      "nome": "Exterior",
+      "grupos": [
+        "casco",
+        "superestrutura",
+        "antivegetativa"
+      ]
+    },
+    {
+      "id": "nome",
+      "nome": "Nome",
+      "grupos": [
+        "nome"
+      ],
+      "camera": "Popa"
+    }
+  ],
+  "grupos": [
+    {
+      "id": "casco",
+      "nome": "Casco",
+      "tipo": "cor",
+      "zona": "casco",
+      "opcoes": [
+        {
+          "id": "branco",
+          "nome": "Branco",
+          "hex": "#f4f3ef",
+          "acabamento": "gelcoat",
+          "padrao": true
+        },
+        {
+          "id": "grafite",
+          "nome": "Grafite metalizado",
+          "hex": "#40444a",
+          "acabamento": "metalizado",
+          "preco": 520000
+        },
+        {
+          "id": "azul",
+          "nome": "Azul profundo metalizado",
+          "hex": "#1a2a48",
+          "acabamento": "metalizado",
+          "preco": 560000
+        },
+        {
+          "id": "champanhe",
+          "nome": "Champanhe",
+          "hex": "#cdbb9a",
+          "acabamento": "perolado",
+          "preco": 610000
+        }
+      ]
+    },
+    {
+      "id": "superestrutura",
+      "nome": "Superestrutura",
+      "tipo": "cor",
+      "zona": "superestrutura",
+      "opcoes": [
+        {
+          "id": "branco",
+          "nome": "Branco",
+          "hex": "#f4f3ef",
+          "acabamento": "gelcoat",
+          "padrao": true
+        },
+        {
+          "id": "prata",
+          "nome": "Prata",
+          "hex": "#c3c6ca",
+          "acabamento": "metalizado",
+          "preco": 300000
+        }
+      ]
+    },
+    {
+      "id": "antivegetativa",
+      "nome": "Antivegetativa",
+      "tipo": "cor",
+      "zona": "antivegetativa",
+      "opcoes": [
+        {
+          "id": "preto",
+          "nome": "Preto",
+          "hex": "#151719",
+          "acabamento": "mate",
+          "padrao": true
+        },
+        {
+          "id": "vermelho",
+          "nome": "Vermelho",
+          "hex": "#9e1b1b",
+          "acabamento": "mate"
+        }
+      ]
+    },
+    {
+      "id": "nome",
+      "nome": "Nome do iate",
+      "tipo": "texto",
+      "max": 18,
+      "decal": {
+        "lado": "popa",
+        "cor": "auto",
+        "fonte": "Georgia, serif"
+      }
+    }
+  ],
+  "animacoes": [
+    {
+      "tipo": "balanco",
+      "amplitude": 0.003
+    }
+  ]
+}

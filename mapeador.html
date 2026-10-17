@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mapeador de peças</title>
+<link rel="icon" href="data:,">
+<script type="importmap">{ "imports": { "three": "./vendor/three.module.js", "three/addons/": "./vendor/addons/" } }</script>
+<style>
+  :root { --f: #f6f4ef; --t: #14161a; --s: #6b6f76; --l: #e2ded5; --a: #b08d57; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; font: 14px/1.4 Inter, system-ui, sans-serif; color: var(--t); background: #0e1013; }
+  .app { display: grid; grid-template-columns: 1fr 460px; height: 100vh; }
+  .palco { position: relative; background: radial-gradient(120% 90% at 60% 35%, #2a2f36, #0b0c0e); }
+  .palco canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .largar { position: absolute; inset: 24px; border: 1px dashed #ffffff40; display: grid; place-items: center; color: #e9e6df; text-align: center; pointer-events: none; }
+  .largar.oculto { display: none; }
+  .dica { position: absolute; left: 16px; bottom: 14px; color: #cfcac0; font-size: 12px; }
+  aside { background: var(--f); display: grid; grid-template-rows: auto auto 1fr auto; min-height: 0; }
+  header { padding: 18px 20px 10px; }
+  h1 { margin: 0 0 4px; font: 500 26px Georgia, serif; }
+  header p { margin: 0; color: var(--s); font-size: 12.5px; }
+  .filtro { display: flex; gap: 6px; padding: 0 20px 10px; flex-wrap: wrap; }
+  .filtro button, .filtro input { border: 1px solid var(--l); background: #fff; padding: 6px 10px; font: inherit; font-size: 12px; border-radius: 999px; cursor: pointer; }
+  .filtro input { border-radius: 2px; flex: 1; min-width: 120px; cursor: text; }
+  .filtro button[aria-pressed="true"] { background: var(--t); color: #fff; border-color: var(--t); }
+  ol { list-style: none; margin: 0; padding: 0 12px 12px; overflow: auto; }
+  li { display: grid; grid-template-columns: 14px 1fr 150px 26px; gap: 8px; align-items: center; padding: 7px 8px; border-radius: 2px; border-bottom: 1px solid var(--l); }
+  li:hover, li.realce { background: #fff; }
+  li.realce { box-shadow: inset 3px 0 0 var(--a); }
+  li .cor { width: 14px; height: 14px; border-radius: 50%; box-shadow: inset 0 0 0 1px #0002; }
+  li .n { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12.5px; }
+  li .n small { display: block; color: var(--s); font-size: 11px; }
+  li select { font: inherit; font-size: 12px; padding: 4px; border: 1px solid var(--l); background: #fff; }
+  li select.sugerido { border-color: var(--a); color: #7a5a2a; }
+  li .olho { border: 0; background: none; cursor: pointer; font-size: 15px; opacity: .7; }
+  li.oculta .n { text-decoration: line-through; color: var(--s); }
+  footer { padding: 12px 20px; border-top: 1px solid var(--l); display: grid; gap: 8px; grid-template-columns: 1fr 1fr; }
+  footer button { border: 1px solid var(--t); background: var(--t); color: #fff; padding: 11px; font: inherit; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+  footer button.sec { background: none; color: var(--t); }
+  .resumo { grid-column: 1 / -1; font-size: 12px; color: var(--s); }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="palco" id="palco"><div class="largar" id="largar">Arraste para aqui um GLB/GLTF já normalizado<br><small>ou abra com ?modelo=modelos/nome.glb</small></div>
+    <div class="dica">Clique numa peça para a encontrar na lista. Passe o rato na lista para a ver no barco.</div></div>
+  <aside>
+    <header><h1>Mapeador de peças</h1><p data-info>Diga o que é cada peça. O mapeador sugere pelo nome (em várias línguas) e pela cor; o que sair daqui é o início da ficha do configurador.</p></header>
+    <div class="filtro"><input type="search" placeholder="Procurar peça" data-procura><button type="button" data-so="sem" aria-pressed="false">Sem zona</button><button type="button" data-so="sug" aria-pressed="false">Sugeridas</button><button type="button" data-aceita>Aceitar sugestões</button><button type="button" data-pontos aria-pressed="false">Marcar pontos</button><button type="button" data-nome aria-pressed="false">Sítio do nome</button></div>
+    <ol data-lista></ol>
+    <footer><div class="resumo" data-resumo></div><button type="button" class="sec" data-copia>Copiar ficha</button><button type="button" data-descarrega>Descarregar ficha</button></footer>
+  </aside>
+</div>
+<script type="module" src="mapeador.js"></script>
+</body>
+</html>

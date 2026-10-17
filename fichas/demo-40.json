@@ -1,0 +1,350 @@
+{
+  "id": "demo-40",
+  "marca": "Demonstração do kit",
+  "nome": "Iate 40 m",
+  "medidas": "40,0 m × 6,3 m · modelo de teste da web, mapeado no mapeador",
+  "creditos": "Modelo «Yacht» de Gman The Cruise Dude, CC-BY-4.0 (Sketchfab). Preços de demonstração.",
+  "modelo": "../modelos/gman.glb",
+  "lingua": "pt-PT",
+  "preco": {
+    "base": 18500000,
+    "moeda": "EUR",
+    "nota": "Preços de demonstração, não são de nenhum estaleiro"
+  },
+  "ambienteInicial": "mar",
+  "linhaDeAgua": 0.16,
+  "zonas": {
+    "casco": {
+      "procura": "^(Material3)\\|",
+      "acabamento": "gelcoat"
+    },
+    "metal": {
+      "procura": "^(Material4002|Material2012)\\|",
+      "acabamento": "inox"
+    },
+    "antivegetativa": {
+      "procura": "^(Material3001)\\|",
+      "acabamento": "mate"
+    },
+    "teca": {
+      "procura": "^(Material3007|Material2007)\\|",
+      "acabamento": "madeira"
+    },
+    "luzes": {
+      "procura": "^(Material2002)\\|",
+      "acabamento": "solido",
+      "luz": "#5fd7ff",
+      "intensidade": 4
+    },
+    "vidro": {
+      "procura": "^(Material3009|Material2004)\\|",
+      "acabamento": "vidro"
+    }
+  },
+  "passos": [
+    {
+      "id": "nivel",
+      "nome": "Nível",
+      "grupos": [
+        "nivel"
+      ],
+      "camera": "Três quartos"
+    },
+    {
+      "id": "exterior",
+      "nome": "Exterior",
+      "grupos": [
+        "casco",
+        "antivegetativa"
+      ],
+      "camera": "Perfil"
+    },
+    {
+      "id": "conves",
+      "nome": "Convés",
+      "grupos": [
+        "teca"
+      ],
+      "camera": "De cima"
+    },
+    {
+      "id": "equipamento",
+      "nome": "Equipamento",
+      "grupos": [
+        "equip",
+        "brinquedos"
+      ]
+    },
+    {
+      "id": "nome",
+      "nome": "Nome",
+      "grupos": [
+        "nome"
+      ],
+      "camera": "Popa"
+    }
+  ],
+  "grupos": [
+    {
+      "id": "nivel",
+      "nome": "Nível de equipamento",
+      "tipo": "pacote",
+      "opcoes": [
+        {
+          "id": "essencial",
+          "nome": "Essencial",
+          "descricao": "O iate como sai do estaleiro.",
+          "padrao": true
+        },
+        {
+          "id": "oceano",
+          "nome": "Oceano",
+          "descricao": "Estabilizadores, gerador extra e Wi-Fi por satélite.",
+          "preco": 640000,
+          "inclui": [
+            "equip:estabilizadores",
+            "equip:gerador",
+            "equip:satelite"
+          ]
+        },
+        {
+          "id": "charter",
+          "nome": "Charter",
+          "descricao": "Tudo do Oceano e a garagem de brinquedos completa.",
+          "preco": 1150000,
+          "inclui": [
+            "equip:estabilizadores",
+            "equip:gerador",
+            "equip:satelite",
+            "brinquedos:tender",
+            "brinquedos:jetski",
+            "brinquedos:seabob"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "casco",
+      "nome": "Cor do casco",
+      "tipo": "cor",
+      "zona": "casco",
+      "opcoes": [
+        {
+          "id": "branco",
+          "nome": "Branco puro",
+          "hex": "#f3f2ee",
+          "acabamento": "gelcoat",
+          "padrao": true
+        },
+        {
+          "id": "marfim",
+          "nome": "Marfim",
+          "hex": "#e9e2d2",
+          "acabamento": "gelcoat"
+        },
+        {
+          "id": "prata",
+          "nome": "Prata metalizado",
+          "hex": "#b9bcc0",
+          "acabamento": "metalizado",
+          "preco": 380000
+        },
+        {
+          "id": "grafite",
+          "nome": "Grafite metalizado",
+          "hex": "#3b3f45",
+          "acabamento": "metalizado",
+          "preco": 380000
+        },
+        {
+          "id": "azul-noite",
+          "nome": "Azul noite metalizado",
+          "hex": "#16233a",
+          "acabamento": "metalizado",
+          "preco": 420000
+        },
+        {
+          "id": "perola",
+          "nome": "Pérola",
+          "hex": "#ece8e1",
+          "acabamento": "perolado",
+          "preco": 460000
+        }
+      ]
+    },
+    {
+      "id": "antivegetativa",
+      "nome": "Antivegetativa",
+      "tipo": "cor",
+      "zona": "antivegetativa",
+      "opcoes": [
+        {
+          "id": "vermelho",
+          "nome": "Vermelho clássico",
+          "hex": "#9e1b1b",
+          "acabamento": "mate",
+          "padrao": true
+        },
+        {
+          "id": "preto",
+          "nome": "Preto",
+          "hex": "#151719",
+          "acabamento": "mate"
+        },
+        {
+          "id": "azul",
+          "nome": "Azul marinho",
+          "hex": "#14294a",
+          "acabamento": "mate"
+        }
+      ]
+    },
+    {
+      "id": "teca",
+      "nome": "Convés",
+      "tipo": "material",
+      "zona": "teca",
+      "opcoes": [
+        {
+          "id": "teca",
+          "nome": "Teca natural",
+          "hex": "#b7834c",
+          "acabamento": "madeira",
+          "teca": {
+            "tom": "#b7834c",
+            "calafeto": "#1d1712"
+          },
+          "padrao": true
+        },
+        {
+          "id": "teca-clara",
+          "nome": "Teca envelhecida",
+          "hex": "#c9b59a",
+          "acabamento": "madeira",
+          "teca": {
+            "tom": "#c9b59a",
+            "calafeto": "#2a2622"
+          },
+          "preco": 45000
+        },
+        {
+          "id": "carvalho",
+          "nome": "Carvalho fumado",
+          "hex": "#6f5641",
+          "acabamento": "madeira",
+          "teca": {
+            "tom": "#6f5641",
+            "calafeto": "#e8e3da"
+          },
+          "preco": 90000
+        }
+      ]
+    },
+    {
+      "id": "equip",
+      "nome": "Equipamento",
+      "tipo": "equipamento",
+      "opcoes": [
+        {
+          "id": "estabilizadores",
+          "nome": "Estabilizadores giroscópicos",
+          "preco": 420000
+        },
+        {
+          "id": "gerador",
+          "nome": "Segundo gerador",
+          "preco": 160000
+        },
+        {
+          "id": "satelite",
+          "nome": "Wi-Fi por satélite",
+          "preco": 95000
+        },
+        {
+          "id": "solar",
+          "nome": "Painéis solares no tejadilho",
+          "preco": 120000,
+          "exclui": [
+            "equip:satelite"
+          ],
+          "descricao": "Ocupam o lugar da antena do satélite."
+        }
+      ]
+    },
+    {
+      "id": "brinquedos",
+      "nome": "Garagem de brinquedos",
+      "tipo": "extra",
+      "opcoes": [
+        {
+          "id": "tender",
+          "nome": "Tender de 6 m",
+          "preco": 210000
+        },
+        {
+          "id": "jetski",
+          "nome": "Duas motas de água",
+          "preco": 48000,
+          "requer": [
+            "brinquedos:tender"
+          ],
+          "descricao": "Vão na garagem junto ao tender."
+        },
+        {
+          "id": "seabob",
+          "nome": "Dois Seabob",
+          "preco": 32000
+        }
+      ]
+    },
+    {
+      "id": "nome",
+      "nome": "Nome do iate",
+      "tipo": "texto",
+      "max": 18,
+      "preco": 2500,
+      "decal": {
+        "zona": "^Material3002\\|",
+        "pos": [
+          -18.25,
+          1.7,
+          0
+        ],
+        "normal": [
+          -1,
+          0,
+          0
+        ],
+        "largura": 3.2,
+        "cor": "auto",
+        "fonte": "Georgia, serif"
+      }
+    }
+  ],
+  "pontos": [
+    {
+      "titulo": "Piscina de proa",
+      "texto": "Zona de lazer na proa com piscina iluminada.",
+      "pos": [
+        9,
+        4.6,
+        0
+      ]
+    },
+    {
+      "titulo": "Ponte de comando",
+      "texto": "Posto de comando no deck superior.",
+      "pos": [
+        4,
+        7.0,
+        0
+      ]
+    }
+  ],
+  "animacoes": [
+    {
+      "tipo": "balanco",
+      "amplitude": 0.004
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Configurador 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="estilo.css">
+<script type="importmap">{ "imports": { "three": "./vendor/three.module.js", "three/addons/": "./vendor/addons/" } }</script>
+<style>html, body { margin: 0; background: #0e1013; }</style>
+</head>
+<body>
+<main id="configurador"></main>
+<script type="module">
+  import { montaConfigurador } from './ui.js';
+  const nome = new URLSearchParams(location.search).get('ficha') || 'demo-40';
+  const fichaUrl = new URL(`fichas/${nome.replace(/[^\w-]/g, '')}.json`, location.href);
+  const ficha = await (await fetch(fichaUrl)).json();
+  document.title = `${ficha.nome} · Configurador`;
+  window.cf = await montaConfigurador(document.getElementById('configurador'), ficha, { base: fichaUrl.href });
+</script>
+</body>
+</html>
