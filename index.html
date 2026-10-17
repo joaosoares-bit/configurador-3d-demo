@@ -11,7 +11,13 @@
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="estilo.css">
 <script type="importmap">{ "imports": { "three": "./vendor/three.module.js", "three/addons/": "./vendor/addons/" } }</script>
-<style>html, body { margin: 0; background: #0e1013; }</style>
+<style>html, body { margin: 0; background: #0e1013; }
+  .cf-cofre { position: fixed; inset: 0; z-index: 99; display: grid; place-content: center; gap: 10px; padding: 24px; background: #0e1013; color: #ece9e2; font: 15px/1.4 Inter, system-ui, sans-serif; text-align: center; }
+  .cf-cofre p { margin: 0 0 8px; font: 500 28px "Cormorant Garamond", Georgia, serif; }
+  .cf-cofre label { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: #9c988f; }
+  .cf-cofre input { width: min(320px, 80vw); padding: 13px 14px; font: 16px Inter, system-ui, sans-serif; border: 1px solid #3a3d42; background: #16181c; color: #fff; border-radius: 2px; text-align: center; }
+  .cf-cofre button { padding: 13px; font: 600 13px Inter, system-ui, sans-serif; letter-spacing: .08em; text-transform: uppercase; background: #ece9e2; color: #14161a; border: 0; border-radius: 2px; cursor: pointer; }
+  .cf-cofre small { min-height: 1.4em; color: #d9a07a; }</style>
 </head>
 <body>
 <main id="configurador"></main>
@@ -22,11 +28,35 @@
 </script>
 <script type="module">
   import { montaConfigurador } from './ui.js';
-  const nome = new URLSearchParams(location.search).get('ficha') || 'demo-32';
-  const fichaUrl = new URL(`fichas/${nome.replace(/[^\w-]/g, '')}.json`, location.href);
-  const ficha = await (await fetch(fichaUrl)).json();
+  const q = new URLSearchParams(location.search);
+  const privado = (q.get('privado') || '').replace(/[^\w-]/g, '');
+  const nome = (q.get('ficha') || 'demo-32').replace(/[^\w-]/g, '');
+  const fichaUrl = new URL(`fichas/${privado || nome}.${privado ? 'enc' : 'json'}`, location.href);
+  const ficha = privado ? await abrePrivada(fichaUrl) : await (await fetch(fichaUrl)).json();
   document.title = `${ficha.nome} · Configurador`;
   window.cf = await montaConfigurador(document.getElementById('configurador'), ficha, { base: fichaUrl.href });
+</script>
+<script>
+  // versões privadas: a ficha vem cifrada e só se lê com o código (o código fica só nesta sessão do browser)
+  async function decifra(cifra, codigo) {
+    const b = (s) => Uint8Array.from(atob(s), (ch) => ch.charCodeAt(0));
+    const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(codigo), 'PBKDF2', false, ['deriveKey']);
+    const chave = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt: b(cifra.sal), iterations: 250000, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+    return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b(cifra.iv) }, chave, b(cifra.dados))));
+  }
+  window.abrePrivada = async function (url) {
+    const cifra = await (await fetch(url)).json();
+    let guardado = null; try { guardado = sessionStorage.getItem('cf-codigo'); } catch {}
+    if (guardado) { try { return await decifra(cifra, guardado); } catch {} }
+    const caixa = document.createElement('form'); caixa.className = 'cf-cofre';
+    caixa.innerHTML = '<p>Versão privada</p><label for="cf-cod">Código de acesso</label><input id="cf-cod" type="password" autocomplete="off" autocapitalize="none" spellcheck="false" required><button type="submit">Abrir</button><small aria-live="polite"></small>';
+    document.body.prepend(caixa); const inp = caixa.querySelector('input'); inp.focus();
+    return new Promise((ok) => caixa.addEventListener('submit', async (e) => {
+      e.preventDefault(); caixa.querySelector('small').textContent = 'A abrir…';
+      try { const f = await decifra(cifra, inp.value.trim()); try { sessionStorage.setItem('cf-codigo', inp.value.trim()); } catch {} caixa.remove(); ok(f); }
+      catch { caixa.querySelector('small').textContent = 'Código errado.'; inp.select(); }
+    }));
+  };
 </script>
 </body>
 </html>

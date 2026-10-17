@@ -370,7 +370,8 @@ export async function criaVisor(el, ficha, { base = '', reduz = matchMedia('(pre
   const aplicadas = new Map(); // zona -> opção já aplicada (não se repinta o que não mudou)
   function pintaZona(zid, op, chave = zid) {
     if (!matsZona.get(zid)) return;
-    if (aplicadas.get(chave) === op) return; aplicadas.set(chave, op); // por grupo: o tecido e a cor da mesma zona não se anulam
+    const ident = op._chave ? `${op.id}:${op._chave}` : op;
+    if (aplicadas.get(chave) === ident) return; aplicadas.set(chave, ident); // por grupo: o tecido e a cor da mesma zona não se anulam
     if (op.relevo) zonas[zid].rel = op.relevo;
     const rel = zonas[zid].rel || zonas[zid].def.relevo;
     if (rel) for (const m of zonas[zid].mats) { m.normalMap = relevo(rel); m.normalScale = new THREE.Vector2(0.6, 0.6); m.roughness = RUGOSIDADE[rel] ?? m.roughness; if (rel !== 'tecido') m.sheen = 0; m.needsUpdate = true; }
@@ -472,7 +473,9 @@ export async function criaVisor(el, ficha, { base = '', reduz = matchMedia('(pre
         if (!ids.includes(o.id)) continue;
         for (const re of [].concat(o.mostra || [])) visivel(re).forEach((m) => ver.add(m));
         for (const re of [].concat(o.esconde || [])) visivel(re).forEach((m) => esconder.add(m));
-        if (o.zona || g.zona) for (const zid of [].concat(o.zona || g.zona)) if (['cor', 'material'].includes(g.tipo)) pintaZona(zid, o, `${zid}|${g.id}`);
+        let op = o;
+        if (o.igualA) { const gg = ficha.grupos.find((x) => x.id === o.igualA); const sel = gg?.opcoes.find((x) => x.id === estado[gg.id]); if (sel) op = { ...o, hex: sel.hex, acabamento: o.acabamento || sel.acabamento, _chave: sel.id }; }
+        if (o.zona || g.zona) for (const zid of [].concat(o.zona || g.zona)) if (['cor', 'material'].includes(g.tipo)) pintaZona(zid, op, `${zid}|${g.id}`);
         if (g.tipo === 'ambiente') poeAmbiente(o.id);
       }
     }

@@ -1020,6 +1020,16 @@
             "cobertura:ttop|cobertura:ttop-solar"
           ],
           "preco": 3400
+        },
+        {
+          "id": "radar",
+          "nome": "Radar em cúpula",
+          "mostra": "^mod radar",
+          "requer": [
+            "cobertura:ttop|cobertura:ttop-solar"
+          ],
+          "preco": 4800,
+          "camera": "Cobertura"
         }
       ]
     },
@@ -1106,6 +1116,14 @@
           "descricao": "Na plataforma de bombordo, com antiderrapante.",
           "mostra": "^mod prancha salto",
           "preco": 1700,
+          "camera": "Popa"
+        },
+        {
+          "id": "ski",
+          "nome": "Mastro de ski",
+          "descricao": "Para esqui aquático, wakeboard e boias rebocadas.",
+          "mostra": "^mod mastro ski",
+          "preco": 1400,
           "camera": "Popa"
         },
         {
