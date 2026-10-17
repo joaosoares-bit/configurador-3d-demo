@@ -58,7 +58,7 @@ export async function montaConfigurador(raiz, ficha, { base } = {}) {
   for (const n of visor.cameras) vistas.append(h('button', { type: 'button', class: 'cf-chip', onclick: () => visor.voa(n) }, n));
   const ambs = ficha.ambientes || [['estudio', 'Estúdio'], ['mar', 'Mar'], ['por-do-sol', 'Pôr do sol'], ['noite', 'Noite']];
   let ambAct = ficha.ambienteInicial || 'estudio';
-  for (const [id, nome] of ambs) ambientes.append(h('button', { type: 'button', class: 'cf-chip', 'aria-pressed': String(id === ambAct), onclick: (e) => {
+  if (ambs.length > 1) for (const [id, nome] of ambs) ambientes.append(h('button', { type: 'button', class: 'cf-chip', 'aria-pressed': String(id === ambAct), onclick: (e) => {
     ambAct = id; visor.poeAmbiente(id); ambientes.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b === e.currentTarget)));
   } }, nome));
   if (ficha.corte) {

@@ -11,7 +11,7 @@
     "moeda": "EUR",
     "nota": "Preços de demonstração, não são de nenhum estaleiro"
   },
-  "ambienteInicial": "mar",
+  "ambienteInicial": "estudio",
   "linhaDeAgua": 0.16,
   "zonas": {
     "casco": {
@@ -341,10 +341,11 @@
       ]
     }
   ],
-  "animacoes": [
-    {
-      "tipo": "balanco",
-      "amplitude": 0.004
-    }
+  "animacoes": [],
+  "ambientes": [
+    [
+      "estudio",
+      "Estúdio"
+    ]
   ]
 }

@@ -10,7 +10,7 @@
     "moeda": "EUR",
     "nota": "Preços de demonstração"
   },
-  "ambienteInicial": "mar",
+  "ambienteInicial": "estudio",
   "linhaDeAgua": 0.075,
   "zonas": {
     "antivegetativa": {
@@ -150,10 +150,11 @@
       }
     }
   ],
-  "animacoes": [
-    {
-      "tipo": "balanco",
-      "amplitude": 0.003
-    }
+  "animacoes": [],
+  "ambientes": [
+    [
+      "estudio",
+      "Estúdio"
+    ]
   ]
 }
