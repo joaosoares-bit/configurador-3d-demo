@@ -121,22 +121,25 @@
   padding: 11px 16px; font-size: 13px; border-radius: var(--cf-raio); opacity: 0; transition: .35s; pointer-events: none; }
 .cf-aviso.ver { opacity: 1; transform: translate(-50%, 0); }
 
-/* ---------- telemóvel: palco em cima, painel por baixo; o 3D nunca prende o scroll ---------- */
+/* ---------- telemóvel: a PÁGINA desliza (nada de caixas com scroll lá dentro — no iPhone ficavam com 30 px);
+   o barco fica preso em cima, os passos ficam presos por baixo dele e o preço no fundo ---------- */
 @media (max-width: 900px) {
-  .cf { grid-template-columns: 1fr; grid-template-rows: 52dvh 1fr; height: 100dvh; }
-  .cf-cab { padding: 14px 18px 8px; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .cf { display: block; height: auto; min-height: 100dvh; overflow: visible; --cf-alto: 44dvh; }
+  .cf-palco { position: sticky; top: 0; height: var(--cf-alto); z-index: 3; }
+  .cf-painel { display: block; position: relative; z-index: 1; min-height: calc(100dvh - var(--cf-alto)); }
+  .cf-cab { padding: 14px 18px 8px; display: flex; align-items: baseline; gap: 4px 10px; flex-wrap: wrap; }
   .cf-modelo { font-size: 24px; margin: 0; }
-  .cf-marca { width: 100%; }
-  .cf-passos { padding: 0 10px; }
-  .cf-corpo { padding: 4px 18px 18px; }
-  .cf-barra { padding: 10px 18px calc(10px + env(safe-area-inset-bottom)); }
+  .cf-marca, .cf-medidas, .cf-creditos { width: 100%; }
+  .cf-passos { position: sticky; top: var(--cf-alto); z-index: 2; background: var(--cf-painel); padding: 0 10px; }
+  .cf-corpo { overflow: visible; padding: 4px 18px 24px; }
+  .cf-barra { position: sticky; bottom: 0; z-index: 2; padding: 10px 18px calc(10px + env(safe-area-inset-bottom)); }
   .cf-barra .cf-btn-sec { display: none; }
   .cf-vistas { left: 12px; right: 12px; bottom: 12px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
   .cf-ambientes { top: 12px; right: 12px; }
-  .cf-chip { padding: 7px 11px; flex: none; }
+  .cf .cf-chip { padding: 7px 11px; flex: none; }
   .cf-amostras { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
   .cf-amostra { flex: none; }
   .cf-cartao { left: 12px; right: 12px; top: auto; bottom: 56px; max-width: none; }
-  .cf-aviso { bottom: auto; top: 12px; }
+  .cf-aviso { position: fixed; bottom: auto; top: calc(var(--cf-alto) + 56px); }
 }
 @media (prefers-reduced-motion: reduce) { .cf * { transition: none !important; animation: none !important; } }
