@@ -77,6 +77,7 @@ export async function montaConfigurador(raiz, ficha, { base } = {}) {
   passos.push({ id: 'resumo', nome: T.resumo, resumo: true });
   let passo = 0;
   const telemovel = () => matchMedia('(max-width: 900px)').matches;
+  const reduzMov = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const tabs = passos.map((p, i) => h('button', { type: 'button', role: 'tab', class: 'cf-passo', onclick: () => vai(i) }, h('i', {}, String(i + 1)), p.nome));
   passosNav.append(...tabs);
   barra.querySelector('[data-ant]').onclick = () => vai(passo - 1);
@@ -92,8 +93,8 @@ export async function montaConfigurador(raiz, ficha, { base } = {}) {
     desenha(); corpo.scrollTop = 0;
     // o separador escolhido ao centro, só na horizontal (scrollIntoView também mexia a página na vertical)
     const tb = tabs[passo]; passosNav.scrollTo({ left: tb.offsetLeft - (passosNav.clientWidth - tb.clientWidth) / 2, behavior: 'smooth' });
-    // no telemóvel a página desliza: ao mudar de passo, volta ao início das opções (os passos ficam presos por baixo do barco)
-    if (telemovel()) { const alvo = passosNav.getBoundingClientRect().top + scrollY - palco.offsetHeight; if (scrollY > alvo) scrollTo({ top: alvo, behavior: 'smooth' }); }
+    // no telemóvel, quem carrega em «Seguinte» lá em baixo volta ao início das opções do passo novo (só se já passou dele)
+    if (telemovel() && passosNav.getBoundingClientRect().top < 0) passosNav.scrollIntoView({ block: 'start', behavior: reduzMov ? 'auto' : 'smooth' });
   }
 
   function muda(gid, oid, ligar) {

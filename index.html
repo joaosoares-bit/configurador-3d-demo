@@ -15,6 +15,11 @@
 </head>
 <body>
 <main id="configurador"></main>
+<script>
+  // refresh: começa sempre no topo (o browser tentava voltar a meio da página antes de o 3D existir)
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  scrollTo(0, 0);
+</script>
 <script type="module">
   import { montaConfigurador } from './ui.js';
   const nome = new URLSearchParams(location.search).get('ficha') || 'demo-40';
