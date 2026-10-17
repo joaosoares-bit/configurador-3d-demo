@@ -22,7 +22,7 @@
 </script>
 <script type="module">
   import { montaConfigurador } from './ui.js';
-  const nome = new URLSearchParams(location.search).get('ficha') || 'demo-40';
+  const nome = new URLSearchParams(location.search).get('ficha') || 'demo-32';
   const fichaUrl = new URL(`fichas/${nome.replace(/[^\w-]/g, '')}.json`, location.href);
   const ficha = await (await fetch(fichaUrl)).json();
   document.title = `${ficha.nome} · Configurador`;

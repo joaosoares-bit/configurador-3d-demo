@@ -131,7 +131,7 @@ export async function montaConfigurador(raiz, ficha, { base } = {}) {
         h('div', { class: 'cf-grupo-cab' }, h('h2', {}, g.nome),
           g.tipo !== 'texto' && !R.multiplo(g) ? h('span', { class: 'cf-escolha' }, sel[0]?.nome || '—', sel[0]?.padrao ? h('i', {}, T.padrao) : null) : null),
         g.descricao ? h('p', { class: 'cf-grupo-desc' }, g.descricao) : null);
-      if (g.tipo === 'cor' || g.tipo === 'material') {
+      if ((g.tipo === 'cor' || g.tipo === 'material') && g.opcoes.every((o) => o.hex)) {
         const lista = h('div', { class: 'cf-amostras' });
         for (const o of g.opcoes) lista.append(amostraCor(g, o, sel.includes(o), R.bloqueio(ficha, estado, g.id, o.id)));
         sec.append(lista);

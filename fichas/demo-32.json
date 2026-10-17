@@ -1,0 +1,1254 @@
+{
+  "id": "demo-32",
+  "marca": "Demonstração do kit",
+  "nome": "Open 32",
+  "medidas": "9,9 m × 3,15 m · dayboat de consola central, desenhado pelo kit",
+  "creditos": "Barco desenhado de raiz pelo kit (todas as peças nossas). Preços de demonstração, não são de nenhum estaleiro.",
+  "modelo": "../modelos/demo-32.glb",
+  "lingua": "pt-PT",
+  "preco": {
+    "base": 189000,
+    "moeda": "EUR",
+    "nota": "Preços de demonstração, sem IVA"
+  },
+  "ambienteInicial": "estudio",
+  "ambientes": [
+    [
+      "estudio",
+      "Estúdio"
+    ]
+  ],
+  "linhaDeAgua": 0.12,
+  "cameraInicial": "Três quartos",
+  "zonas": {
+    "casco": {
+      "procura": "CASCO gelcoat",
+      "acabamento": "gelcoat"
+    },
+    "faixa": {
+      "procura": "FAIXA casco",
+      "acabamento": "gelcoat"
+    },
+    "linha-agua": {
+      "procura": "LINHA AGUA",
+      "acabamento": "gelcoat"
+    },
+    "antivegetativa": {
+      "procura": "ANTIFOULING",
+      "acabamento": "mate"
+    },
+    "conves": {
+      "procura": "CONVES gelcoat|FORRO cockpit",
+      "acabamento": "gelcoat"
+    },
+    "teca": {
+      "procura": "TECA flexiteek",
+      "acabamento": "madeira"
+    },
+    "estofo-proa": {
+      "procura": "ESTOFO PROA",
+      "acabamento": "tecido",
+      "relevo": "vinil"
+    },
+    "estofo-popa": {
+      "procura": "ESTOFO POPA",
+      "acabamento": "tecido",
+      "relevo": "vinil"
+    },
+    "estofo-banco": {
+      "procura": "ESTOFO BANCO",
+      "acabamento": "pele",
+      "relevo": "pele"
+    },
+    "estofo-acento": {
+      "procura": "ESTOFO ACENTO",
+      "acabamento": "tecido",
+      "relevo": "tecido"
+    },
+    "mesa": {
+      "procura": "MESA teca",
+      "acabamento": "madeira"
+    },
+    "ttop": {
+      "procura": "TTOP gelcoat",
+      "acabamento": "gelcoat"
+    },
+    "lona": {
+      "procura": "LONA bimini",
+      "acabamento": "tecido",
+      "relevo": "tecido"
+    },
+    "motor": {
+      "procura": "MOTOR capota",
+      "acabamento": "metalizado"
+    },
+    "prancha": {
+      "procura": "PRANCHA salto",
+      "acabamento": "gelcoat"
+    },
+    "led-sub": {
+      "procura": "LED subaquatico",
+      "acabamento": "solido",
+      "luz": "#5fd7ff",
+      "intensidade": 5,
+      "acesa": true
+    },
+    "led-ttop": {
+      "procura": "LED ttop",
+      "acabamento": "solido",
+      "luz": "#fff1d6",
+      "intensidade": 1.6,
+      "acesa": true
+    },
+    "ecras": {
+      "procura": "^mod ecras",
+      "acabamento": "vidro"
+    }
+  },
+  "cameras": {
+    "Solário": {
+      "pos": [
+        11.8,
+        4.3,
+        4.6
+      ],
+      "alvo": [
+        6.6,
+        1.3,
+        0
+      ]
+    },
+    "Cockpit": {
+      "pos": [
+        -3.2,
+        4.2,
+        4.2
+      ],
+      "alvo": [
+        1.7,
+        0.9,
+        0
+      ]
+    },
+    "Posto de comando": {
+      "pos": [
+        1.9,
+        3.0,
+        2.8
+      ],
+      "alvo": [
+        4.9,
+        1.6,
+        0
+      ]
+    },
+    "Popa": {
+      "pos": [
+        -6.8,
+        2.7,
+        5.2
+      ],
+      "alvo": [
+        -0.4,
+        0.7,
+        0
+      ]
+    },
+    "Cobertura": {
+      "pos": [
+        10.8,
+        6.8,
+        7.8
+      ],
+      "alvo": [
+        4.8,
+        2.3,
+        0
+      ]
+    }
+  },
+  "passos": [
+    {
+      "id": "casco",
+      "nome": "Casco",
+      "grupos": [
+        "casco",
+        "faixa",
+        "linha-agua",
+        "antivegetativa",
+        "conves"
+      ],
+      "camera": "Três quartos"
+    },
+    {
+      "id": "conves",
+      "nome": "Convés",
+      "grupos": [
+        "teca",
+        "mesa"
+      ],
+      "camera": "Cockpit"
+    },
+    {
+      "id": "proa",
+      "nome": "Solário de proa",
+      "grupos": [
+        "tecido-proa",
+        "cor-proa",
+        "toldo"
+      ],
+      "camera": "Solário"
+    },
+    {
+      "id": "popa",
+      "nome": "Sofá de popa",
+      "grupos": [
+        "tecido-popa",
+        "cor-popa",
+        "almofadas",
+        "cor-acento"
+      ],
+      "camera": "Cockpit"
+    },
+    {
+      "id": "piloto",
+      "nome": "Posto de comando",
+      "grupos": [
+        "banco",
+        "cor-banco",
+        "ecras",
+        "wetbar"
+      ],
+      "camera": "Posto de comando"
+    },
+    {
+      "id": "cobertura",
+      "nome": "Cobertura",
+      "grupos": [
+        "cobertura",
+        "cor-ttop",
+        "cor-lona",
+        "acessorios-ttop"
+      ],
+      "camera": "Cobertura"
+    },
+    {
+      "id": "motores",
+      "nome": "Motores",
+      "grupos": [
+        "motorizacao",
+        "cor-motor"
+      ],
+      "camera": "Popa"
+    },
+    {
+      "id": "mods",
+      "nome": "Mods e equipamento",
+      "grupos": [
+        "mods",
+        "cor-led",
+        "equipamento"
+      ],
+      "camera": "Popa"
+    },
+    {
+      "id": "nome",
+      "nome": "Nome",
+      "grupos": [
+        "nome"
+      ],
+      "camera": "Perfil"
+    }
+  ],
+  "grupos": [
+    {
+      "id": "casco",
+      "nome": "Cor do casco",
+      "tipo": "cor",
+      "zona": "casco",
+      "opcoes": [
+        {
+          "id": "branco",
+          "nome": "Branco gelo",
+          "hex": "#f2f1ec",
+          "acabamento": "gelcoat",
+          "padrao": true
+        },
+        {
+          "id": "areia",
+          "nome": "Areia",
+          "hex": "#d8cdb8",
+          "acabamento": "gelcoat",
+          "preco": 4900
+        },
+        {
+          "id": "cinza-nevoa",
+          "nome": "Cinza névoa",
+          "hex": "#b9bcbe",
+          "acabamento": "gelcoat",
+          "preco": 4900
+        },
+        {
+          "id": "azul-mediterraneo",
+          "nome": "Azul Mediterrâneo",
+          "hex": "#23557a",
+          "acabamento": "gelcoat",
+          "preco": 6900
+        },
+        {
+          "id": "verde-salvia",
+          "nome": "Verde salva",
+          "hex": "#7e8f7d",
+          "acabamento": "gelcoat",
+          "preco": 6900
+        },
+        {
+          "id": "prata",
+          "nome": "Prata metalizado",
+          "hex": "#b7bbc0",
+          "acabamento": "metalizado",
+          "preco": 12900
+        },
+        {
+          "id": "titanio",
+          "nome": "Titânio metalizado",
+          "hex": "#5a5f66",
+          "acabamento": "metalizado",
+          "preco": 12900
+        },
+        {
+          "id": "azul-noite",
+          "nome": "Azul noite metalizado",
+          "hex": "#16233a",
+          "acabamento": "metalizado",
+          "preco": 14900
+        },
+        {
+          "id": "bronze",
+          "nome": "Bronze metalizado",
+          "hex": "#7b5a3c",
+          "acabamento": "metalizado",
+          "preco": 14900
+        },
+        {
+          "id": "grafite-mate",
+          "nome": "Grafite mate",
+          "hex": "#33363b",
+          "acabamento": "mate",
+          "preco": 16900
+        },
+        {
+          "id": "areia-mate",
+          "nome": "Areia mate",
+          "hex": "#b8a88c",
+          "acabamento": "mate",
+          "preco": 16900
+        },
+        {
+          "id": "perola",
+          "nome": "Pérola",
+          "hex": "#ece7df",
+          "acabamento": "perolado",
+          "preco": 18900
+        }
+      ]
+    },
+    {
+      "id": "faixa",
+      "nome": "Faixa do casco",
+      "tipo": "cor",
+      "zona": "faixa",
+      "opcoes": [
+        {
+          "id": "azul-noite",
+          "nome": "Azul noite",
+          "hex": "#1b2433",
+          "padrao": true
+        },
+        {
+          "id": "preto",
+          "nome": "Preto",
+          "hex": "#141517"
+        },
+        {
+          "id": "cinza",
+          "nome": "Cinza",
+          "hex": "#7d8186"
+        },
+        {
+          "id": "areia",
+          "nome": "Areia",
+          "hex": "#c9b894"
+        },
+        {
+          "id": "vermelho",
+          "nome": "Vermelho regata",
+          "hex": "#9e1b1b"
+        },
+        {
+          "id": "igual",
+          "nome": "Sem faixa (cor do casco)",
+          "hex": "#f2f1ec"
+        }
+      ]
+    },
+    {
+      "id": "linha-agua",
+      "nome": "Linha de água",
+      "tipo": "cor",
+      "zona": "linha-agua",
+      "opcoes": [
+        {
+          "id": "azul-noite",
+          "nome": "Azul noite",
+          "hex": "#1b2433",
+          "padrao": true
+        },
+        {
+          "id": "preto",
+          "nome": "Preto",
+          "hex": "#141517"
+        },
+        {
+          "id": "vermelho",
+          "nome": "Vermelho",
+          "hex": "#9e1b1b"
+        },
+        {
+          "id": "branco",
+          "nome": "Branco",
+          "hex": "#f2f1ec"
+        }
+      ]
+    },
+    {
+      "id": "antivegetativa",
+      "nome": "Antivegetativa",
+      "tipo": "cor",
+      "zona": "antivegetativa",
+      "opcoes": [
+        {
+          "id": "azul-noite",
+          "nome": "Azul noite",
+          "hex": "#1b2433",
+          "acabamento": "mate",
+          "padrao": true
+        },
+        {
+          "id": "preto",
+          "nome": "Preto",
+          "hex": "#141517",
+          "acabamento": "mate"
+        },
+        {
+          "id": "cinza",
+          "nome": "Cinza",
+          "hex": "#5c6066",
+          "acabamento": "mate"
+        },
+        {
+          "id": "vermelho",
+          "nome": "Vermelho",
+          "hex": "#8e1a1a",
+          "acabamento": "mate"
+        },
+        {
+          "id": "branco",
+          "nome": "Branco",
+          "hex": "#e9e8e4",
+          "acabamento": "mate"
+        }
+      ]
+    },
+    {
+      "id": "conves",
+      "nome": "Cor do convés e do cockpit",
+      "tipo": "cor",
+      "zona": "conves",
+      "opcoes": [
+        {
+          "id": "branco",
+          "nome": "Branco",
+          "hex": "#ecebe6",
+          "padrao": true
+        },
+        {
+          "id": "areia",
+          "nome": "Areia",
+          "hex": "#ddd3c1",
+          "preco": 3900
+        },
+        {
+          "id": "cinza-claro",
+          "nome": "Cinza claro",
+          "hex": "#c8cacb",
+          "preco": 3900
+        },
+        {
+          "id": "grafite",
+          "nome": "Grafite",
+          "hex": "#4a4d52",
+          "preco": 5900
+        }
+      ]
+    },
+    {
+      "id": "teca",
+      "nome": "Piso do convés",
+      "tipo": "material",
+      "zona": "teca",
+      "opcoes": [
+        {
+          "id": "teca-natural",
+          "nome": "Teca natural",
+          "hex": "#b98552",
+          "teca": {
+            "tom": "#b98552",
+            "calafeto": "#1d1712",
+            "repeticao": 0.8
+          },
+          "padrao": true
+        },
+        {
+          "id": "teca-clara",
+          "nome": "Teca envelhecida",
+          "hex": "#cdbba1",
+          "teca": {
+            "tom": "#cdbba1",
+            "calafeto": "#2a2622",
+            "repeticao": 0.8
+          }
+        },
+        {
+          "id": "flexi-cinza",
+          "nome": "Flexiteek cinza",
+          "hex": "#a9a6a2",
+          "teca": {
+            "tom": "#a9a6a2",
+            "calafeto": "#f0efea",
+            "repeticao": 0.8
+          },
+          "preco": 2900
+        },
+        {
+          "id": "flexi-carvalho",
+          "nome": "Flexiteek carvalho fumado",
+          "hex": "#6f5641",
+          "teca": {
+            "tom": "#6f5641",
+            "calafeto": "#e8e3da",
+            "repeticao": 0.8
+          },
+          "preco": 2900
+        },
+        {
+          "id": "eva-areia",
+          "nome": "EVA areia",
+          "hex": "#d4c6aa",
+          "relevo": "eva",
+          "preco": -1500
+        },
+        {
+          "id": "eva-grafite",
+          "nome": "EVA grafite",
+          "hex": "#45484d",
+          "relevo": "eva",
+          "preco": -1500
+        }
+      ]
+    },
+    {
+      "id": "mesa",
+      "nome": "Mesa do cockpit",
+      "tipo": "variante",
+      "opcional": true,
+      "opcoes": [
+        {
+          "id": "mesa",
+          "nome": "Mesa em teca",
+          "padrao": true,
+          "mostra": "^mod mesa (1|2)",
+          "preco": 0
+        },
+        {
+          "id": "solario",
+          "nome": "Mesa que vira solário",
+          "descricao": "A mesa desce e a almofada fecha o cockpit numa cama de sol.",
+          "mostra": "^mod mesa solario",
+          "preco": 2400
+        },
+        {
+          "id": "sem",
+          "nome": "Sem mesa",
+          "preco": -900
+        }
+      ]
+    },
+    {
+      "id": "tecido-proa",
+      "nome": "Tecido do solário",
+      "tipo": "material",
+      "zona": "estofo-proa",
+      "opcoes": [
+        {
+          "id": "vinil",
+          "nome": "Vinil náutico (Silvertex)",
+          "relevo": "vinil",
+          "padrao": true
+        },
+        {
+          "id": "tecido",
+          "nome": "Tecido exterior (Sunbrella)",
+          "relevo": "tecido",
+          "preco": 1800
+        },
+        {
+          "id": "pele",
+          "nome": "Pele náutica",
+          "relevo": "pele",
+          "preco": 3200
+        }
+      ]
+    },
+    {
+      "id": "cor-proa",
+      "nome": "Cor do solário",
+      "tipo": "cor",
+      "zona": "estofo-proa",
+      "opcoes": [
+        {
+          "id": "marfim",
+          "nome": "Marfim",
+          "hex": "#e9e4da",
+          "padrao": true
+        },
+        {
+          "id": "areia",
+          "nome": "Areia",
+          "hex": "#d1c3a8"
+        },
+        {
+          "id": "cinza",
+          "nome": "Cinza pedra",
+          "hex": "#9b9a96"
+        },
+        {
+          "id": "grafite",
+          "nome": "Grafite",
+          "hex": "#3f4247"
+        },
+        {
+          "id": "marinho",
+          "nome": "Azul marinho",
+          "hex": "#1e2c45"
+        },
+        {
+          "id": "azul-mar",
+          "nome": "Azul mar",
+          "hex": "#2f6f8f"
+        },
+        {
+          "id": "turquesa",
+          "nome": "Turquesa",
+          "hex": "#5fb3b0"
+        },
+        {
+          "id": "terracota",
+          "nome": "Terracota",
+          "hex": "#b5603f"
+        },
+        {
+          "id": "coral",
+          "nome": "Coral",
+          "hex": "#e46a54"
+        },
+        {
+          "id": "verde",
+          "nome": "Verde oliva",
+          "hex": "#6b7151"
+        }
+      ]
+    },
+    {
+      "id": "toldo",
+      "nome": "Toldo do solário",
+      "tipo": "extra",
+      "opcoes": [
+        {
+          "id": "toldo",
+          "nome": "Toldo de proa amovível",
+          "descricao": "Quatro varões em inox e lona por cima do solário.",
+          "mostra": "^mod toldo proa",
+          "preco": 2900,
+          "camera": "Solário"
+        }
+      ]
+    },
+    {
+      "id": "tecido-popa",
+      "nome": "Tecido do sofá de popa",
+      "tipo": "material",
+      "zona": "estofo-popa",
+      "opcoes": [
+        {
+          "id": "vinil",
+          "nome": "Vinil náutico (Silvertex)",
+          "relevo": "vinil",
+          "padrao": true
+        },
+        {
+          "id": "tecido",
+          "nome": "Tecido exterior (Sunbrella)",
+          "relevo": "tecido",
+          "preco": 2400
+        },
+        {
+          "id": "pele",
+          "nome": "Pele náutica",
+          "relevo": "pele",
+          "preco": 4200
+        }
+      ]
+    },
+    {
+      "id": "cor-popa",
+      "nome": "Cor do sofá de popa",
+      "tipo": "cor",
+      "zona": "estofo-popa",
+      "opcoes": [
+        {
+          "id": "marfim",
+          "nome": "Marfim",
+          "hex": "#e9e4da",
+          "padrao": true
+        },
+        {
+          "id": "areia",
+          "nome": "Areia",
+          "hex": "#d1c3a8"
+        },
+        {
+          "id": "cinza",
+          "nome": "Cinza pedra",
+          "hex": "#9b9a96"
+        },
+        {
+          "id": "grafite",
+          "nome": "Grafite",
+          "hex": "#3f4247"
+        },
+        {
+          "id": "marinho",
+          "nome": "Azul marinho",
+          "hex": "#1e2c45"
+        },
+        {
+          "id": "azul-mar",
+          "nome": "Azul mar",
+          "hex": "#2f6f8f"
+        },
+        {
+          "id": "turquesa",
+          "nome": "Turquesa",
+          "hex": "#5fb3b0"
+        },
+        {
+          "id": "terracota",
+          "nome": "Terracota",
+          "hex": "#b5603f"
+        },
+        {
+          "id": "coral",
+          "nome": "Coral",
+          "hex": "#e46a54"
+        },
+        {
+          "id": "verde",
+          "nome": "Verde oliva",
+          "hex": "#6b7151"
+        }
+      ]
+    },
+    {
+      "id": "almofadas",
+      "nome": "Almofadas decorativas",
+      "tipo": "extra",
+      "opcoes": [
+        {
+          "id": "almofadas",
+          "nome": "Três almofadas decorativas",
+          "mostra": "^mod almofadas",
+          "preco": 390
+        }
+      ]
+    },
+    {
+      "id": "cor-acento",
+      "nome": "Cor das almofadas",
+      "tipo": "cor",
+      "zona": "estofo-acento",
+      "opcoes": [
+        {
+          "id": "marinho",
+          "nome": "Azul marinho",
+          "hex": "#1e2c45",
+          "padrao": true
+        },
+        {
+          "id": "terracota",
+          "nome": "Terracota",
+          "hex": "#b5603f"
+        },
+        {
+          "id": "turquesa",
+          "nome": "Turquesa",
+          "hex": "#5fb3b0"
+        },
+        {
+          "id": "amarelo",
+          "nome": "Amarelo sol",
+          "hex": "#e0b23c"
+        },
+        {
+          "id": "riscas",
+          "nome": "Areia",
+          "hex": "#cbb995"
+        }
+      ]
+    },
+    {
+      "id": "banco",
+      "nome": "Banco do piloto",
+      "tipo": "variante",
+      "opcoes": [
+        {
+          "id": "corrido",
+          "nome": "Banco corrido (leaning post)",
+          "padrao": true,
+          "mostra": "^mod banco corrido"
+        },
+        {
+          "id": "individuais",
+          "nome": "Dois bancos individuais",
+          "descricao": "Com apoios laterais e almofada rebatível.",
+          "mostra": "^mod bancos individuais",
+          "preco": 3600
+        }
+      ]
+    },
+    {
+      "id": "cor-banco",
+      "nome": "Pele dos bancos e do volante",
+      "tipo": "cor",
+      "zona": "estofo-banco",
+      "opcoes": [
+        {
+          "id": "carvao",
+          "nome": "Carvão",
+          "hex": "#2b2d31",
+          "padrao": true
+        },
+        {
+          "id": "marfim",
+          "nome": "Marfim",
+          "hex": "#e6e0d3"
+        },
+        {
+          "id": "conhaque",
+          "nome": "Conhaque",
+          "hex": "#8a5a36",
+          "preco": 900
+        },
+        {
+          "id": "marinho",
+          "nome": "Azul marinho",
+          "hex": "#1e2c45",
+          "preco": 900
+        },
+        {
+          "id": "vermelho",
+          "nome": "Vermelho",
+          "hex": "#8e2027",
+          "preco": 900
+        }
+      ]
+    },
+    {
+      "id": "ecras",
+      "nome": "Ecrãs de navegação",
+      "tipo": "variante",
+      "opcoes": [
+        {
+          "id": "12",
+          "nome": "2 × 12 polegadas",
+          "padrao": true,
+          "mostra": "^mod ecras 12"
+        },
+        {
+          "id": "16",
+          "nome": "2 × 16 polegadas",
+          "mostra": "^mod ecras 16",
+          "preco": 7800
+        }
+      ]
+    },
+    {
+      "id": "wetbar",
+      "nome": "Wetbar",
+      "tipo": "extra",
+      "opcoes": [
+        {
+          "id": "wetbar",
+          "nome": "Lava-loiça e frigorífico nas costas do banco",
+          "mostra": "^mod wetbar",
+          "preco": 4900,
+          "camera": "Cockpit"
+        }
+      ]
+    },
+    {
+      "id": "cobertura",
+      "nome": "Cobertura",
+      "tipo": "variante",
+      "opcoes": [
+        {
+          "id": "sem",
+          "nome": "Sem cobertura",
+          "padrao": true
+        },
+        {
+          "id": "bimini",
+          "nome": "Bimini em lona",
+          "descricao": "Três arcos em inox, rebatível.",
+          "mostra": "^mod bimini",
+          "preco": 3900
+        },
+        {
+          "id": "ttop",
+          "nome": "T-top em fibra com LED",
+          "mostra": "^mod ttop fibra",
+          "preco": 14900
+        },
+        {
+          "id": "ttop-solar",
+          "nome": "T-top com painel solar",
+          "descricao": "600 W no tecto para o frigorífico e o som.",
+          "mostra": "^mod ttop solar",
+          "preco": 19900
+        }
+      ]
+    },
+    {
+      "id": "cor-ttop",
+      "nome": "Cor do T-top",
+      "tipo": "cor",
+      "zona": "ttop",
+      "opcoes": [
+        {
+          "id": "branco",
+          "nome": "Branco",
+          "hex": "#f2f1ec",
+          "padrao": true
+        },
+        {
+          "id": "cinza",
+          "nome": "Cinza névoa",
+          "hex": "#b9bcbe"
+        },
+        {
+          "id": "grafite",
+          "nome": "Grafite",
+          "hex": "#3b3e43",
+          "preco": 1500
+        },
+        {
+          "id": "azul-noite",
+          "nome": "Azul noite",
+          "hex": "#16233a",
+          "preco": 1500
+        }
+      ]
+    },
+    {
+      "id": "cor-lona",
+      "nome": "Cor das lonas (bimini e toldo)",
+      "tipo": "cor",
+      "zona": "lona",
+      "opcoes": [
+        {
+          "id": "grafite",
+          "nome": "Grafite",
+          "hex": "#2a2e35",
+          "padrao": true
+        },
+        {
+          "id": "areia",
+          "nome": "Areia",
+          "hex": "#cbbf9f"
+        },
+        {
+          "id": "marinho",
+          "nome": "Azul marinho",
+          "hex": "#1e2c45"
+        },
+        {
+          "id": "branco",
+          "nome": "Branco",
+          "hex": "#e9e7e1"
+        }
+      ]
+    },
+    {
+      "id": "acessorios-ttop",
+      "nome": "Acessórios do T-top",
+      "tipo": "extra",
+      "opcoes": [
+        {
+          "id": "rack",
+          "nome": "Rack com duas pranchas de surf",
+          "mostra": "^mod rack",
+          "requer": [
+            "cobertura:ttop|cobertura:ttop-solar"
+          ],
+          "preco": 1900
+        },
+        {
+          "id": "colunas",
+          "nome": "Quatro colunas de som no T-top",
+          "mostra": "^mod colunas",
+          "requer": [
+            "cobertura:ttop|cobertura:ttop-solar"
+          ],
+          "preco": 3400
+        }
+      ]
+    },
+    {
+      "id": "motorizacao",
+      "nome": "Motorização",
+      "tipo": "variante",
+      "opcoes": [
+        {
+          "id": "2x300",
+          "nome": "2 × 300 cv fora de borda",
+          "padrao": true,
+          "mostra": "^motor [12] "
+        },
+        {
+          "id": "2x350",
+          "nome": "2 × 350 cv fora de borda",
+          "mostra": "^motor [12] ",
+          "preco": 14000
+        },
+        {
+          "id": "3x300",
+          "nome": "3 × 300 cv fora de borda",
+          "descricao": "Os dois de fora afastam-se para dar lugar ao terceiro.",
+          "mostra": [
+            "^mod motor 3 ",
+            "^mod motor 2c "
+          ],
+          "preco": 38000
+        }
+      ]
+    },
+    {
+      "id": "cor-motor",
+      "nome": "Cor das capotas",
+      "tipo": "cor",
+      "zona": "motor",
+      "opcoes": [
+        {
+          "id": "branco",
+          "nome": "Branco frio",
+          "hex": "#f4f4f2",
+          "acabamento": "metalizado",
+          "padrao": true
+        },
+        {
+          "id": "preto",
+          "nome": "Preto",
+          "hex": "#151619",
+          "acabamento": "metalizado"
+        },
+        {
+          "id": "cinza",
+          "nome": "Cinza titânio",
+          "hex": "#6a6e74",
+          "acabamento": "metalizado",
+          "preco": 1800
+        },
+        {
+          "id": "cor-casco",
+          "nome": "Na cor do casco: azul noite",
+          "hex": "#16233a",
+          "acabamento": "metalizado",
+          "preco": 3900
+        }
+      ]
+    },
+    {
+      "id": "mods",
+      "nome": "Mods visíveis",
+      "tipo": "extra",
+      "opcoes": [
+        {
+          "id": "escada",
+          "nome": "Escada de banho telescópica",
+          "mostra": "^mod escada",
+          "padrao": true,
+          "preco": 0,
+          "camera": "Popa"
+        },
+        {
+          "id": "prancha",
+          "nome": "Prancha de salto",
+          "descricao": "Na plataforma de bombordo, com antiderrapante.",
+          "mostra": "^mod prancha salto",
+          "preco": 1700,
+          "camera": "Popa"
+        },
+        {
+          "id": "balaustrada",
+          "nome": "Balaustrada de proa em inox",
+          "mostra": "^mod balaustrada",
+          "padrao": true,
+          "preco": 0
+        },
+        {
+          "id": "ancora",
+          "nome": "Âncora com guincho eléctrico",
+          "mostra": "^mod ancora",
+          "preco": 2600
+        },
+        {
+          "id": "led",
+          "nome": "Luzes subaquáticas LED",
+          "mostra": "^mod luzes subaquaticas",
+          "preco": 1900,
+          "camera": "Popa"
+        }
+      ]
+    },
+    {
+      "id": "cor-led",
+      "nome": "Cor das luzes subaquáticas",
+      "tipo": "cor",
+      "zona": "led-sub",
+      "opcoes": [
+        {
+          "id": "azul",
+          "nome": "Azul",
+          "hex": "#5fd7ff",
+          "padrao": true
+        },
+        {
+          "id": "branco",
+          "nome": "Branco",
+          "hex": "#f2f4ff"
+        },
+        {
+          "id": "verde",
+          "nome": "Verde",
+          "hex": "#4dffb0"
+        },
+        {
+          "id": "violeta",
+          "nome": "Violeta",
+          "hex": "#b48cff"
+        }
+      ]
+    },
+    {
+      "id": "equipamento",
+      "nome": "Equipamento",
+      "tipo": "equipamento",
+      "opcoes": [
+        {
+          "id": "propulsor",
+          "nome": "Propulsor de proa",
+          "preco": 5400
+        },
+        {
+          "id": "joystick",
+          "nome": "Joystick de atracação",
+          "preco": 9800,
+          "requer": [
+            "propulsor"
+          ]
+        },
+        {
+          "id": "piloto",
+          "nome": "Piloto automático",
+          "preco": 4200
+        },
+        {
+          "id": "som",
+          "nome": "Som premium com subwoofer",
+          "preco": 2900
+        },
+        {
+          "id": "wifi",
+          "nome": "Wi-Fi 4G a bordo",
+          "preco": 1600
+        },
+        {
+          "id": "duche",
+          "nome": "Duche de popa (água doce)",
+          "preco": 1100
+        },
+        {
+          "id": "capa",
+          "nome": "Capa de proteção completa",
+          "preco": 2300
+        }
+      ]
+    },
+    {
+      "id": "nome",
+      "nome": "Nome do barco",
+      "tipo": "texto",
+      "max": 18,
+      "preco": 450,
+      "decal": {
+        "lado": "costado",
+        "ao": 0.24,
+        "cor": "auto",
+        "fonte": "Georgia, serif"
+      }
+    }
+  ],
+  "pontos": [
+    {
+      "titulo": "Solário de proa",
+      "texto": "Almofadas grossas com encosto na frente da consola.",
+      "pos": [
+        7.0,
+        1.55,
+        0
+      ],
+      "camera": "Solário"
+    },
+    {
+      "titulo": "Posto de comando",
+      "texto": "Pára-brisas curvo, dois ecrãs e volante em pele.",
+      "pos": [
+        5.1,
+        2.05,
+        0
+      ],
+      "camera": "Posto de comando"
+    },
+    {
+      "titulo": "Plataformas de banho",
+      "texto": "Teca nas duas plataformas, motores ao centro.",
+      "pos": [
+        -0.4,
+        0.85,
+        0.95
+      ],
+      "camera": "Popa"
+    }
+  ],
+  "corte": false
+}

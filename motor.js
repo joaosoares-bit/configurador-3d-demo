@@ -16,7 +16,7 @@ CameraControls.install({ THREE });
 const ACABAMENTO = {
   gelcoat: { roughness: 0.3, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.08 },
   solido: { roughness: 0.32, metalness: 0, clearcoat: 0.35, clearcoatRoughness: 0.12 },
-  metalizado: { roughness: 0.32, metalness: 0.6, clearcoat: 1, clearcoatRoughness: 0.03 },
+  metalizado: { roughness: 0.38, metalness: 0.3, clearcoat: 1, clearcoatRoughness: 0.04 }, // metal a mais reflecte o estúdio e apaga a cor (azul noite saía prata)
   perolado: { roughness: 0.28, metalness: 0.2, clearcoat: 1, clearcoatRoughness: 0.04, iridescence: 0.35, iridescenceIOR: 1.4 },
   mate: { roughness: 0.68, metalness: 0.05, clearcoat: 0, clearcoatRoughness: 0 },
   tecido: { roughness: 0.92, metalness: 0, clearcoat: 0, sheen: 1, sheenRoughness: 0.6 },
@@ -60,6 +60,35 @@ function tinge(m) {
   m.customProgramCacheKey = () => 'tinge';
 }
 
+// relevos (mapas de normais) desenhados em canvas: dão textura aos estofos sem descarregar imagens
+const RELEVOS = {};
+function relevo(tipo) {
+  if (RELEVOS[tipo]) return RELEVOS[tipo];
+  const N = 256, alt = new Float32Array(N * N);
+  let s = 11; const rnd = () => ((s = (s * 16807) % 2147483647) / 2147483647);
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+    let h = 0;
+    if (tipo === 'tecido') { const fx = Math.sin(x / N * Math.PI * 64), fy = Math.sin(y / N * Math.PI * 64); h = (((x >> 2) + (y >> 2)) % 2 ? fx : fy) * 0.5 + rnd() * 0.25; }
+    else if (tipo === 'pele') { h = rnd() * 0.35; }
+    else if (tipo === 'vinil') { h = Math.sin(x / N * Math.PI * 128) * Math.sin(y / N * Math.PI * 128) * 0.3 + rnd() * 0.1; }
+    else if (tipo === 'eva') { h = ((x % 32 < 2) || (y % 32 < 2)) ? -1 : rnd() * 0.15; }
+    alt[y * N + x] = h;
+  }
+  if (tipo === 'pele') for (let k = 0; k < 3; k++) { const b = alt.slice(); for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) { let m = 0; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) m += b[((y + dy + N) % N) * N + ((x + dx + N) % N)]; alt[y * N + x] = m / 9; } }
+  const c = document.createElement('canvas'); c.width = c.height = N; const cx = c.getContext('2d'), img = cx.createImageData(N, N);
+  const forca = { tecido: 2.2, pele: 6, vinil: 2.5, eva: 3 }[tipo] || 2;
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+    const dx = (alt[y * N + (x + 1) % N] - alt[y * N + (x - 1 + N) % N]) * forca, dy = (alt[((y + 1) % N) * N + x] - alt[((y - 1 + N) % N) * N + x]) * forca;
+    const l = Math.hypot(dx, dy, 1), i = (y * N + x) * 4;
+    img.data[i] = (-dx / l * 0.5 + 0.5) * 255; img.data[i + 1] = (-dy / l * 0.5 + 0.5) * 255; img.data[i + 2] = (1 / l * 0.5 + 0.5) * 255; img.data[i + 3] = 255;
+  }
+  cx.putImageData(img, 0, 0);
+  const tx = new THREE.CanvasTexture(c); tx.wrapS = tx.wrapT = THREE.RepeatWrapping; tx.colorSpace = THREE.NoColorSpace;
+  tx.repeat.setScalar({ tecido: 5, pele: 3, vinil: 6, eva: 2 }[tipo] || 4);
+  return (RELEVOS[tipo] = tx);
+}
+const RUGOSIDADE = { tecido: 0.92, pele: 0.5, vinil: 0.38, eva: 0.85 };
+
 const sombraTex = (() => {
   let t = null;
   return () => {
@@ -85,8 +114,16 @@ export async function criaVisor(el, ficha, { base = '', reduz = matchMedia('(pre
   let sujo = true, parado = 0, visivelNoEcra = true;
   const cena = new THREE.Scene();
   const pm = new THREE.PMREMGenerator(renderer);
-  const envEstudio = pm.fromScene(new RoomEnvironment(), 0.04).texture;
+  let envEstudio = pm.fromScene(new RoomEnvironment(), 0.04).texture;
+  if (ficha.hdri !== false) {
+    try {
+      const { HDRLoader } = await import('./vendor/addons/loaders/HDRLoader.js');
+      const hdr = await new HDRLoader().loadAsync(ficha.hdri ? url(ficha.hdri) : new URL('./estudio.hdr', import.meta.url).href);
+      hdr.mapping = THREE.EquirectangularReflectionMapping; envEstudio = pm.fromEquirectangular(hdr).texture; hdr.dispose();
+    } catch (e) { console.warn('HDRI de estúdio não carregou; fica a sala', e); }
+  }
   cena.environment = envEstudio;
+  cena.environmentRotation = new THREE.Euler(0, THREE.MathUtils.degToRad(ficha.rodarLuz ?? 160), 0);
   const cam = new THREE.PerspectiveCamera(32, 1, 0.1, 5000);
   const ctl = new CameraControls(cam, tela);
   Object.assign(ctl, { smoothTime: 0.32, draggingSmoothTime: 0.12, azimuthRotateSpeed: 0.6, polarRotateSpeed: 0.6, dollySpeed: 0.5, truckSpeed: 0 });
@@ -219,6 +256,19 @@ export async function criaVisor(el, ficha, { base = '', reduz = matchMedia('(pre
     m.userData.matProprio = true;
   }
 
+  // sombras de contacto cozidas no Blender (atributo de cor nos vértices): multiplicam a cor, qualquer que ela seja
+  const comAO = malhas.length && malhas.every((m) => m.geometry.attributes.color);
+  if (comAO) for (const m of malhas) for (const x of [].concat(m.material)) { x.vertexColors = true; x.needsUpdate = true; }
+  // sombras do sol em tempo real (o T-top desenha sombra no cockpit); só se desenham quando algo muda
+  if (ficha.sombras !== false) {
+    renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    sol.castShadow = true; const tam2 = Math.min(devicePixelRatio > 1.5 ? 2048 : 1024, 2048);
+    sol.shadow.mapSize.set(tam2, tam2); sol.shadow.bias = -0.0012; sol.shadow.normalBias = 0.06; // sem riscas nas superfícies planas sol.shadow.radius = 4;
+    const r = raio * 1.1, sc = sol.shadow.camera; sc.left = -r; sc.right = r; sc.top = r; sc.bottom = -r; sc.near = 0.1; sc.far = raio * 6;
+    sol.target.position.copy(centro); cena.add(sol.target);
+    for (const m of malhas) { m.castShadow = true; m.receiveShadow = true; }
+  }
+
   /* ---------- câmaras ---------- */
   const L = tam.x, alvo0 = new THREE.Vector3(centro.x, tam.y * 0.32, centro.z);
   // vistas automáticas: só a direcção; a distância mede-se no momento, para o barco caber em qualquer ecrã
@@ -309,7 +359,7 @@ export async function criaVisor(el, ficha, { base = '', reduz = matchMedia('(pre
     for (const zid of Object.keys(zonas)) {
       const z = zonas[zid].def; if (!z.luz) continue;
       const m = matsZona.get(zid); if (!m) continue;
-      m.emissive = new THREE.Color(z.luz); m.emissiveIntensity = on ? (z.intensidade || 2.5) : 0;
+      m.emissive = new THREE.Color(z.luz); m.emissiveIntensity = on || z.acesa ? (z.intensidade || 2.5) : 0;
     }
   }
 
@@ -318,14 +368,20 @@ export async function criaVisor(el, ficha, { base = '', reduz = matchMedia('(pre
   const fades = new Set(); let primeiraVez = true;
   const tecas = new Map();
   const aplicadas = new Map(); // zona -> opção já aplicada (não se repinta o que não mudou)
-  function pintaZona(zid, op) {
+  function pintaZona(zid, op, chave = zid) {
     if (!matsZona.get(zid)) return;
-    if (aplicadas.get(zid) === op) return; aplicadas.set(zid, op);
+    if (aplicadas.get(chave) === op) return; aplicadas.set(chave, op); // por grupo: o tecido e a cor da mesma zona não se anulam
+    if (op.relevo) zonas[zid].rel = op.relevo;
+    const rel = zonas[zid].rel || zonas[zid].def.relevo;
+    if (rel) for (const m of zonas[zid].mats) { m.normalMap = relevo(rel); m.normalScale = new THREE.Vector2(0.6, 0.6); m.roughness = RUGOSIDADE[rel] ?? m.roughness; if (rel !== 'tecido') m.sheen = 0; m.needsUpdate = true; }
+    if (!op.hex && !op.teca && !op.textura) { acorda(); return; } // escolha de tecido: a cor vem de outro grupo
     const alvo = new THREE.Color(op.hex || '#ffffff');
+    if (zonas[zid].def.luz) for (const m of zonas[zid].mats) { m.emissive = new THREE.Color(op.hex); zonas[zid].def.luz = op.hex; }
     zonas[zid].alvo = alvo.clone(); // a cor final (a animação ainda vai a meio quando o nome se escreve)
     const fin = ACABAMENTO[op.acabamento || zonas[zid].def.acabamento] || {};
     for (const m of zonas[zid].mats) {
       for (const [k, v] of Object.entries(fin)) if (typeof v === 'number' && k in m && k !== 'opacity') m[k] = v;
+      if (rel) { m.roughness = RUGOSIDADE[rel] ?? m.roughness; m.sheen = rel === 'tecido' ? 1 : 0; } // o tecido escolhido manda no toque
       if (op.teca) { // material de teca desenhado: tom + calafeto
         const chave = `${op.teca.tom || op.hex}|${op.teca.calafeto || '#151515'}`;
         if (!tecas.has(chave)) tecas.set(chave, texturaTeca(op.teca.tom || op.hex, op.teca.calafeto || '#151515'));
@@ -368,16 +424,23 @@ export async function criaVisor(el, ficha, { base = '', reduz = matchMedia('(pre
       const vis = malhas.filter((m) => m.visible), rc = new THREE.Raycaster();
       // varre de baixo para cima: guarda as alturas onde o raio bate numa parede virada para fora (popa ou costado)
       const bons = [];
+      // onde acaba o casco à popa (plataformas, motores, escadas e pranchas ficam mais atrás e não contam)
+      const cz = zonas.casco?.malhas.length ? zonas.casco.malhas : malhas;
+      const popaCasco = cz.reduce((a, m) => Math.min(a, new THREE.Box3().setFromObject(m).min.x), Infinity);
+      const proaCasco = cz.reduce((a, m) => Math.max(a, new THREE.Box3().setFromObject(m).max.x), -Infinity);
       // só no casco: do mar até à borda (o topo da zona casco), nunca na superestrutura
       let borda = tam.y * 0.6;
       const fc = zonas.casco?.def.forma;
       if (fc?.ate != null) borda = Math.min(borda, caixa.min.y + tam.y * (Array.isArray(fc.ate) ? fc.ate[0] : fc.ate)); // zona pela forma: até à borda dela
       else if (zonas.casco?.malhas.length) { const bb = new THREE.Box3(); zonas.casco.malhas.forEach((m) => bb.expandByObject(m)); borda = Math.min(borda, bb.max.y); }
       for (let y = ag + tam.y * 0.02; y < borda; y += tam.y * 0.015) {
-        const o = lado === 'popa' ? new THREE.Vector3(caixa.min.x - L, y, centro.z) : new THREE.Vector3(caixa.min.x + L * (def.ao ?? 0.22), y, caixa.max.z + L);
+        const o = lado === 'popa' ? new THREE.Vector3(caixa.min.x - L, y, centro.z) : new THREE.Vector3(popaCasco + (proaCasco - popaCasco) * (def.ao ?? 0.22), y, caixa.max.z + L);
         rc.set(o, d); const h = rc.intersectObjects(vis, false)[0];
         const nn = h && h.face.normal.clone().transformDirection(h.object.matrixWorld);
-        bons.push(h && (lado === 'popa' ? nn.x < -0.75 : nn.z > 0.75) ? h : null);
+        // na popa só conta o painel (os primeiros 6% do comprimento): um sofá ou um encosto mais à frente não é a popa
+        // na popa só conta o painel; no costado só conta o próprio casco (não plataformas, defensas ou motores)
+        const noPainel = lado === 'popa' ? (h && h.point.x < popaCasco + L * 0.04) : (h && (!zonas.casco?.malhas.length || zonas.casco.malhas.includes(h.object)));
+        bons.push(h && noPainel && (lado === 'popa' ? nn.x < -0.75 : nn.z > 0.75) ? h : null);
       }
       // a maior faixa contínua de parede é o painel de popa (ou o costado); o nome vai ao meio dela
       let melhor = [], corrente = [];
@@ -409,7 +472,7 @@ export async function criaVisor(el, ficha, { base = '', reduz = matchMedia('(pre
         if (!ids.includes(o.id)) continue;
         for (const re of [].concat(o.mostra || [])) visivel(re).forEach((m) => ver.add(m));
         for (const re of [].concat(o.esconde || [])) visivel(re).forEach((m) => esconder.add(m));
-        if (o.zona || g.zona) for (const zid of [].concat(o.zona || g.zona)) if (['cor', 'material'].includes(g.tipo)) pintaZona(zid, o);
+        if (o.zona || g.zona) for (const zid of [].concat(o.zona || g.zona)) if (['cor', 'material'].includes(g.tipo)) pintaZona(zid, o, `${zid}|${g.id}`);
         if (g.tipo === 'ambiente') poeAmbiente(o.id);
       }
     }
