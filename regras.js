@@ -5,7 +5,8 @@
 //   extra | equipamento        -> liga/desliga cada opção (caixa)
 //   texto                      -> texto livre (nome do barco)
 //   pacote                     -> UMA opção que inclui outras (níveis de equipamento)
-// Cada opção pode ter: preco, padrao, requer[], exclui[], inclui[] (ids "grupo:opcao" ou só "opcao").
+// Cada opção pode ter: preco, padrao, requer[], exclui[], inclui[] (ids "grupo:opcao" ou só "opcao"),
+// consulta (true = o estaleiro não publica o preço: mostra-se «sob consulta» e o total avisa).
 
 export const UNICOS = new Set(['cor', 'material', 'variante', 'pacote', 'motor', 'layout', 'ambiente']);
 export const multiplo = (g) => !UNICOS.has(g.tipo) && g.tipo !== 'texto';
@@ -127,10 +128,10 @@ export function preco(ficha, e) {
     const { g, o } = op.get(k);
     const p = inc.has(k) ? 0 : (o.preco || 0);
     total += p;
-    linhas.push({ id: k, grupo: g.nome, nome: o.nome, preco: p, incluido: inc.has(k), padrao: !!o.padrao });
+    linhas.push({ id: k, grupo: g.nome, nome: o.nome, preco: p, incluido: inc.has(k), padrao: !!o.padrao, consulta: !!o.consulta && !inc.has(k) });
   }
   for (const g of ficha.grupos) if (g.tipo === 'texto' && e[g.id]) linhas.push({ id: g.id, grupo: g.nome, nome: `«${e[g.id]}»`, preco: g.preco || 0 }), (total += g.preco || 0);
-  return { total, linhas, moeda: ficha.preco?.moeda || 'EUR' };
+  return { total, linhas, moeda: ficha.preco?.moeda || 'EUR', consulta: linhas.some((l) => l.consulta) }; // consulta: há opções sem preço público
 }
 
 export function formata(v, moeda = 'EUR', lingua = 'pt-PT') {

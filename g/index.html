@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Configuradores 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@600;700&family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../estilo.css">
+<script type="importmap">{ "imports": { "three": "../vendor/three.module.js", "three/addons/": "../vendor/addons/" } }</script>
+<style>
+  :root { --marinho: #0b2142; --azul: #0080a5; --vermelho: #d6453d; --suave: #5d6b80; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #f4f6f8; color: var(--marinho); font: 16px/1.5 Mulish, system-ui, sans-serif; }
+  [hidden] { display: none !important; }
+  .cofre { min-height: 100svh; display: grid; place-content: center; gap: 12px; padding: 24px; background: radial-gradient(120% 140% at 80% -20%, #164a7c 0%, #0b2142 55%, #071630 100%); color: #fff; text-align: center; }
+  .cofre p { margin: 0 0 6px; font: 700 26px 'Josefin Sans', sans-serif; text-transform: uppercase; letter-spacing: .04em; }
+  .cofre input { width: min(320px, 82vw); padding: 14px; font: 16px Mulish, sans-serif; border: 1px solid #ffffff40; background: #ffffff14; color: #fff; border-radius: 12px; text-align: center; }
+  .cofre button { padding: 14px; font: 700 13px Mulish, sans-serif; letter-spacing: .1em; text-transform: uppercase; background: #fff; color: var(--marinho); border: 0; border-radius: 999px; cursor: pointer; }
+  .cofre small { min-height: 1.4em; color: #ffc2b8; }
+  header.topo { background: radial-gradient(120% 140% at 80% -20%, #164a7c 0%, #0b2142 55%, #071630 100%); color: #fff; padding: 46px 20px 40px; position: relative; }
+  header.topo::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: linear-gradient(90deg, var(--marinho) 0 33%, var(--azul) 33% 66%, var(--vermelho) 66%); }
+  .in { max-width: 1240px; margin: 0 auto; }
+  .marca { font: 700 13px 'Josefin Sans', sans-serif; letter-spacing: .4em; opacity: .85; }
+  h1 { font: 700 clamp(30px, 6vw, 60px)/1.04 'Josefin Sans', sans-serif; text-transform: uppercase; margin: 12px 0 0; }
+  main.gama { max-width: 1240px; margin: 0 auto; padding: 10px 16px 70px; }
+  section { margin-top: 40px; }
+  h2 { font: 700 22px 'Josefin Sans', sans-serif; text-transform: uppercase; letter-spacing: .05em; margin: 0 0 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  h2 span { font: 700 11px Mulish, sans-serif; letter-spacing: .2em; color: #fff; background: var(--azul); padding: 6px 10px; border-radius: 999px; }
+  .grelha { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 16px; }
+  .barco { display: flex; flex-direction: column; background: #fff; border-radius: 18px; overflow: hidden; border: 1px solid #e3e8ee; cursor: pointer; text-align: left; padding: 0; font: inherit; color: inherit;
+           box-shadow: 0 14px 30px -24px #0b214280; transition: transform .25s, border-color .25s; }
+  .barco:hover { transform: translateY(-3px); border-color: var(--azul); }
+  .capa { position: relative; aspect-ratio: 16 / 10; background: radial-gradient(120% 95% at 55% 30%, #fff 0%, #e8edf2 55%, #cfd8e1 100%); }
+  .capa img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .capa i { position: absolute; left: 10px; bottom: 10px; font: 600 11.5px Mulish, sans-serif; font-style: normal; color: #fff; background: #0b2142cc; padding: 5px 10px; border-radius: 999px; }
+  .txt { padding: 14px 16px 16px; display: grid; gap: 3px; }
+  .txt b { font: 700 19px 'Josefin Sans', sans-serif; text-transform: uppercase; color: var(--azul); }
+  .txt small { color: var(--suave); font-size: 13px; }
+  .txt em { font-style: normal; font-weight: 700; margin-top: 4px; }
+  .nota { max-width: 1240px; margin: 0 auto; padding: 0 16px 40px; color: var(--suave); font-size: 13px; }
+  .voltar { position: fixed; z-index: 50; left: 12px; top: 12px; border: 0; background: #0b2142d9; color: #fff; font: 700 12.5px Mulish, sans-serif; padding: 10px 14px; border-radius: 999px; cursor: pointer; }
+  .carrega { position: fixed; inset: 0; z-index: 60; display: grid; place-content: center; background: #0b2142e6; color: #fff; font: 600 14px Mulish, sans-serif; letter-spacing: .1em; text-transform: uppercase; }
+  /* tema do configurador (cores da marca) */
+  .cf { --cf-fundo: #0b2142; --cf-palco: radial-gradient(120% 95% at 55% 30%, #ffffff 0%, #e8edf2 50%, #cfd8e1 100%);
+    --cf-painel: #ffffff; --cf-tinta: #0b2142; --cf-tinta2: #164a7c; --cf-suave: #5d6b80; --cf-linha: #e3e8ee;
+    --cf-acento: #0080a5; --cf-acento2: #d6453d; --cf-escolhido: #eef8fb; --cf-pastilha: #0080a514; --cf-sombra: #0b214266;
+    --cf-letra: "Mulish", system-ui, sans-serif; --cf-titulo: "Josefin Sans", "Mulish", sans-serif; --cf-raio: 12px; --cf-raio-cartao: 16px; --cf-largura: 460px; }
+  .cf .cf-cab { position: relative; padding-top: 30px; }
+  .cf .cf-cab::before { content: ""; position: absolute; left: 28px; top: 16px; width: 54px; height: 4px; border-radius: 2px; background: linear-gradient(90deg, #0b2142 0 33%, #0080a5 33% 66%, #d6453d 66%); }
+  .cf .cf-marca { font: 700 12px/1 var(--cf-titulo); letter-spacing: .34em; color: #0b2142; }
+  .cf .cf-modelo { font: 700 31px/1.05 var(--cf-titulo); text-transform: uppercase; letter-spacing: .03em; color: #0080a5; }
+  .cf .cf-grupo-cab h2 { font-family: var(--cf-titulo); font-weight: 700; letter-spacing: .12em; color: #0b2142; }
+  .cf .cf-chip { background: #0b2142c9; border-color: #ffffff38; color: #fff; }
+  .cf .cf-chip[aria-pressed="true"], .cf .cf-chip:hover { background: #fff; color: #0b2142; }
+  .cf .cf-total b { font: 700 25px var(--cf-titulo); color: #0b2142; }
+</style>
+</head>
+<body>
+<form class="cofre" id="cofre"><p>Acesso privado</p><input id="cod" type="password" autocomplete="current-password" placeholder="Código de acesso" aria-label="Código de acesso"><button>Entrar</button><small id="erro"></small></form>
+<div id="hub" hidden></div>
+<main id="configurador" hidden></main>
+<script>if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; scrollTo(0, 0);</script>
+<script type="module">
+  // tudo chega cifrado: decifra-se aqui com o código (a chave fica só nesta sessão do browser)
+  const b64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+  const meta = await (await fetch('chave.json', { cache: 'no-store' })).json();
+  let chave = null, man = null;
+  async function deriva(codigo) {
+    const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(codigo), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: b64(meta.sal), iterations: 250000, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, true, ['decrypt']);
+  }
+  async function abre(id) {
+    const b = new Uint8Array(await (await fetch(`d/${id}.bin`)).arrayBuffer());
+    return new Uint8Array(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b.slice(0, 12) }, chave, b.slice(12)));
+  }
+  const texto = async (id) => JSON.parse(new TextDecoder().decode(await abre(id)));
+  const url = async (id, tipo) => URL.createObjectURL(new Blob([await abre(id)], { type: tipo }));
+  const guardado = sessionStorage.getItem('g-chave');
+  if (guardado) { chave = await crypto.subtle.importKey('raw', b64(guardado), 'AES-GCM', true, ['decrypt']); await mostra().catch((err) => { console.error('abrir', err); if (String(err).includes('OperationError')) { sessionStorage.removeItem('g-chave'); chave = null; } }); }
+  document.getElementById('cofre').addEventListener('submit', async (e) => {
+    e.preventDefault(); const erro = document.getElementById('erro'); erro.textContent = 'A abrir…';
+    try { chave = await deriva(document.getElementById('cod').value); man = await texto(meta.m);   // falha aqui se o código estiver errado
+      const raw = new Uint8Array(await crypto.subtle.exportKey('raw', chave)); sessionStorage.setItem('g-chave', btoa(String.fromCharCode(...raw)));
+      await mostra();
+    } catch { erro.textContent = 'Código errado'; chave = null; }
+  });
+  async function mostra() {
+    man = man || await texto(meta.m);
+    document.getElementById('cofre').hidden = true;
+    // o barco aberto fica na sessão (o configurador troca o # pelo link da configuração)
+    const id = new URLSearchParams(location.hash.slice(1)).get('b') || (location.hash.startsWith('#c=') ? sessionStorage.getItem('g-barco') : null);
+    const barco = id && man.grupos.flatMap((g) => g.barcos).find((x) => x.id === id);
+    if (barco) return configurador(barco);
+    hub();
+  }
+  function esc(s) { return String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+  async function hub() {
+    const el = document.getElementById('hub'); el.hidden = false; document.title = `${man.marca} · ${man.titulo}`;
+    const n = man.grupos.reduce((a, g) => a + g.barcos.length, 0);
+    el.innerHTML = `<header class="topo"><div class="in"><div class="marca">${esc(man.marca)}</div><h1>${esc(man.titulo)}</h1><p style="margin:12px 0 0;color:#cfdcea">${n} barcos em 3D.</p></div></header><main class="gama">` +
+      man.grupos.map((g) => `<section><h2><span>${esc(g.cat)}</span>${esc(g.nome)}</h2><div class="grelha">` + g.barcos.map((b) =>
+        `<button class="barco" data-id="${b.id}"><span class="capa"><img data-capa="${b.capa || ''}" alt=""><i>${b.n3d} peças 3D · ${b.nop} opções</i></span>
+         <span class="txt"><b>${esc(b.nome)}</b><small>${esc(b.medidas)}</small><em>${b.preco ? 'desde ' + b.preco.toLocaleString('pt-PT') + ' € <small>sem IVA</small>' : 'preço no concessionário'}</em></span></button>`).join('') + '</div></section>').join('') +
+      `</main><p class="nota">${esc(man.nota)}</p>`;
+    el.querySelectorAll('.barco').forEach((x) => x.onclick = () => { location.hash = 'b=' + x.dataset.id; location.reload(); });
+    // capas: decifram-se à medida que aparecem no ecrã
+    const io = new IntersectionObserver((es) => es.forEach(async (e) => { if (!e.isIntersecting) return; io.unobserve(e.target); const id = e.target.dataset.capa; if (id) e.target.src = await url(id, 'image/jpeg'); }), { rootMargin: '400px' });
+    el.querySelectorAll('img[data-capa]').forEach((i) => io.observe(i));
+  }
+  async function configurador(b) {
+    const c = document.createElement('div'); c.className = 'carrega'; c.textContent = 'A abrir o barco…'; document.body.append(c);
+    sessionStorage.setItem('g-barco', b.id);
+    const ficha = await texto(b.ficha);
+    ficha.modelo = await url(ficha.modelo.slice(6), 'model/gltf-binary');
+    await Promise.all(ficha.grupos.flatMap((g) => (g.opcoes || []).filter((o) => o.imagem?.startsWith('cifra:')).map(async (o) => { o.imagem = await url(o.imagem.slice(6), 'image/jpeg'); })));
+    document.title = `${ficha.nome} · Configurador 3D`;
+    const v = document.createElement('button'); v.className = 'voltar'; v.textContent = '← Gama'; v.onclick = () => { sessionStorage.removeItem('g-barco'); history.replaceState(null, '', location.pathname); location.reload(); }; document.body.append(v);
+    const el = document.getElementById('configurador'); el.hidden = false;
+    const { montaConfigurador } = await import('../ui.js');
+    window.cf = await montaConfigurador(el, ficha, { base: location.href });
+    c.remove();
+  }
+</script>
+</body>
+</html>

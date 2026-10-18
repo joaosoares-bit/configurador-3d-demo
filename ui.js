@@ -15,7 +15,7 @@ const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&l
 
 export async function montaConfigurador(raiz, ficha, { base } = {}) {
   const lingua = ficha.lingua || 'pt-PT';
-  const T = { pt: { resumo: 'Resumo', total: 'Total', padrao: 'de série', incluido: 'incluído', proposta: 'Pedir proposta', link: 'Copiar link', copiado: 'Link copiado', imagem: 'Descarregar imagem', ar: 'Ver no meu espaço', glb: 'Modelo 3D (.glb)', anterior: 'Anterior', seguinte: 'Seguinte', carregar: 'A preparar o', nome: 'Escreva o nome', semNome: 'sem nome', ambiente: 'Ambiente', vistas: 'Vistas', desde: 'Preço desde', preco: 'Preço', iva: 'IVA não incluído' } }.pt;
+  const T = { pt: { resumo: 'Resumo', total: 'Total', padrao: 'de série', incluido: 'incluído', proposta: 'Pedir proposta', link: 'Copiar link', copiado: 'Link copiado', imagem: 'Descarregar imagem', ar: 'Ver no meu espaço', glb: 'Modelo 3D (.glb)', anterior: 'Anterior', seguinte: 'Seguinte', carregar: 'A preparar o', nome: 'Escreva o nome', semNome: 'sem nome', ambiente: 'Ambiente', vistas: 'Vistas', desde: 'Preço desde', preco: 'Preço', iva: 'IVA não incluído', consulta: 'sob consulta', maisConsulta: '+ opções sob consulta' } }.pt;
   const fmt = (v) => R.formata(v, ficha.preco?.moeda || 'EUR', lingua);
   let estado = R.estadoInicial(ficha);
   const doLink = new URLSearchParams(location.hash.slice(1)).get('c');
@@ -55,7 +55,7 @@ export async function montaConfigurador(raiz, ficha, { base } = {}) {
   });
   const md = visor.medidas;
   cab.querySelector('[data-medidas]').textContent = ficha.medidas || `${md.comprimento.toFixed(1)} m × ${md.boca.toFixed(2)} m`;
-  for (const n of visor.cameras) vistas.append(h('button', { type: 'button', class: 'cf-chip', onclick: () => visor.voa(n) }, n));
+  for (const n of visor.cameras) if (!ficha.cameras?.[n]?.oculta) vistas.append(h('button', { type: 'button', class: 'cf-chip', onclick: () => visor.voa(n) }, n));
   const ambs = ficha.ambientes || [['estudio', 'Estúdio'], ['mar', 'Mar'], ['por-do-sol', 'Pôr do sol'], ['noite', 'Noite']];
   let ambAct = ficha.ambienteInicial || 'estudio';
   if (ambs.length > 1) for (const [id, nome] of ambs) ambientes.append(h('button', { type: 'button', class: 'cf-chip', 'aria-pressed': String(id === ambAct), onclick: (e) => {
@@ -136,6 +136,7 @@ export async function montaConfigurador(raiz, ficha, { base } = {}) {
         for (const o of g.opcoes) lista.append(amostraCor(g, o, sel.includes(o), R.bloqueio(ficha, estado, g.id, o.id)));
         sec.append(lista);
         if (sel[0]?.preco) sec.append(h('p', { class: 'cf-preco-op' }, '+' + fmt(sel[0].preco)));
+        else if (sel[0]?.consulta) sec.append(h('p', { class: 'cf-preco-op' }, T.consulta));
       } else if (g.tipo === 'texto') {
         const inp = h('input', { type: 'text', class: 'cf-texto', maxlength: g.max || 24, value: v || '', placeholder: T.nome, 'aria-label': g.nome });
         inp.addEventListener('input', () => { clearTimeout(inp._t); inp._t = setTimeout(() => muda(g.id, inp.value), 250); });
@@ -145,26 +146,30 @@ export async function montaConfigurador(raiz, ficha, { base } = {}) {
         for (const o of g.opcoes) {
           const on = sel.includes(o), bloq = on ? null : R.bloqueio(ficha, estado, g.id, o.id), multi = R.multiplo(g);
           const incl = inc.has(`${g.id}:${o.id}`);
-          lista.append(h('button', { type: 'button', class: 'cf-cartao-op', 'aria-pressed': String(on), disabled: !!bloq || (incl && on && multi),
+          // cartão: fotografia da peça (miniaturas.mjs), marca de escolhido, nome, descrição e preço em pastilha
+          const marca = h('i', { class: 'cf-op-marca', 'aria-hidden': 'true' });
+          const preco = incl ? T.incluido : o.preco ? '+' + fmt(o.preco) : o.consulta ? T.consulta : o.padrao ? T.padrao : '';
+          lista.append(h('button', { type: 'button', class: `cf-cartao-op${o.imagem ? ' com-imagem' : ''}`, 'aria-pressed': String(on), disabled: !!bloq || (incl && on && multi),
             onclick: () => muda(g.id, o.id, multi ? !on : true) },
-            o.imagem ? h('img', { src: new URL(o.imagem, base).href, alt: '', loading: 'lazy' }) : null,
-            h('span', { class: 'cf-op-nome' }, o.nome),
-            o.descricao ? h('span', { class: 'cf-op-desc' }, o.descricao) : null,
-            bloq ? h('span', { class: 'cf-op-bloq' }, bloq) : null,
-            h('span', { class: 'cf-op-preco' }, incl ? T.incluido : o.preco ? '+' + fmt(o.preco) : o.padrao ? T.padrao : '')));
+            o.imagem ? h('span', { class: 'cf-op-img' }, h('img', { src: new URL(o.imagem, base).href, alt: '', loading: 'lazy', decoding: 'async' }), marca) : marca,
+            h('span', { class: 'cf-op-txt' },
+              h('span', { class: 'cf-op-nome' }, o.nome),
+              o.descricao ? h('span', { class: 'cf-op-desc' }, o.descricao) : null,
+              bloq ? h('span', { class: 'cf-op-bloq' }, bloq) : null),
+            preco ? h('span', { class: `cf-op-preco${incl || (!o.preco && o.padrao) ? ' gratis' : ''}` }, preco) : null));
         }
         sec.append(lista);
       }
       corpo.append(sec);
     }
-    barra.querySelector('[data-total]').textContent = ficha.preco ? fmt(pr.total) : '';
+    barra.querySelector('[data-total]').textContent = ficha.preco ? fmt(pr.total) + (pr.consulta ? ' +' : '') : '';
   }
 
   function desenhaResumo() {
     const pr = R.preco(ficha, estado);
     const tab = h('table', { class: 'cf-resumo' },
-      h('tbody', {}, ...pr.linhas.map((l) => h('tr', {}, h('th', {}, l.grupo), h('td', {}, l.nome), h('td', { class: 'num' }, l.incluido ? T.incluido : l.preco ? fmt(l.preco) : l.padrao ? T.padrao : '—')))),
-      ficha.preco ? h('tfoot', {}, h('tr', {}, h('th', { colspan: 2 }, T.total, ficha.preco.nota ? h('small', {}, ficha.preco.nota) : null), h('td', { class: 'num' }, fmt(pr.total)))) : null);
+      h('tbody', {}, ...pr.linhas.map((l) => h('tr', {}, h('th', {}, l.grupo), h('td', {}, l.nome), h('td', { class: 'num' }, l.incluido ? T.incluido : l.preco ? fmt(l.preco) : l.consulta ? T.consulta : l.padrao ? T.padrao : '—')))),
+      ficha.preco ? h('tfoot', {}, h('tr', {}, h('th', { colspan: 2 }, T.total, ficha.preco.nota ? h('small', {}, ficha.preco.nota) : null), h('td', { class: 'num' }, fmt(pr.total), pr.consulta ? h('small', {}, T.maisConsulta) : null))) : null);
     const link = () => location.href.split('#')[0] + '#c=' + R.codifica(estado);
     const acoes = h('div', { class: 'cf-acoes' },
       h('button', { type: 'button', class: 'cf-btn', onclick: () => pedeProposta(pr, link()) }, T.proposta),
@@ -174,12 +179,12 @@ export async function montaConfigurador(raiz, ficha, { base } = {}) {
         ? h('button', { type: 'button', class: 'cf-btn cf-btn-sec', onclick: async () => abreAR(await visor.exportaUSDZ()) }, T.ar)
         : h('button', { type: 'button', class: 'cf-btn cf-btn-sec', onclick: async () => descarrega(await visor.exportaGLB(), `${ficha.id || 'barco'}.glb`) }, T.glb));
     corpo.append(tab, acoes);
-    barra.querySelector('[data-total]').textContent = ficha.preco ? fmt(pr.total) : '';
+    barra.querySelector('[data-total]').textContent = ficha.preco ? fmt(pr.total) + (pr.consulta ? ' +' : '') : '';
   }
 
   function pedeProposta(pr, link) {
     const linhas = pr.linhas.map((l) => `• ${l.grupo}: ${l.nome}`).join('\n');
-    const txt = `${ficha.nome}\n${linhas}\n${ficha.preco ? 'Total: ' + fmt(pr.total) + '\n' : ''}${link}`;
+    const txt = `${ficha.nome}\n${linhas}\n${ficha.preco ? 'Total: ' + fmt(pr.total) + (pr.consulta ? ' ' + T.maisConsulta : '') + '\n' : ''}${link}`;
     const c = ficha.contacto || {};
     if (c.whatsapp) open(`https://wa.me/${c.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(txt)}`, '_blank', 'noopener');
     else if (c.email) location.href = `mailto:${c.email}?subject=${encodeURIComponent('Proposta ' + ficha.nome)}&body=${encodeURIComponent(txt)}`;

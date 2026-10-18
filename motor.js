@@ -365,7 +365,7 @@ export async function criaVisor(el, ficha, { base = '', reduz = matchMedia('(pre
 
   /* ---------- aplicar a configuração ---------- */
   const anim = []; const DUR = 650, ease = (k) => 1 - Math.pow(1 - k, 4);
-  const fades = new Set(); let primeiraVez = true;
+  const fades = new Set(), movs = new Set(), pivos = new Map(); let primeiraVez = true;
   const tecas = new Map();
   const aplicadas = new Map(); // zona -> opção já aplicada (não se repinta o que não mudou)
   function pintaZona(zid, op, chave = zid) {
@@ -467,6 +467,8 @@ export async function criaVisor(el, ficha, { base = '', reduz = matchMedia('(pre
     // 1) visibilidade: as peças que alguma variante mostra só aparecem com essa variante escolhida
     const controlo = new Set(), ver = new Set(), esconder = new Set();
     for (const g of ficha.grupos) for (const o of g.opcoes || []) for (const re of [].concat(o.mostra || [])) visivel(re).forEach((m) => controlo.add(m));
+    // «modsOcultos»: as peças «mod …» que nenhuma opção mostra ficam escondidas (o modelo traz mods que este barco não vende)
+    if (ficha.modsOcultos) visivel('^mod ').forEach((m) => controlo.add(m));
     for (const g of ficha.grupos) {
       const v = estado[g.id]; const ids = Array.isArray(v) ? v : v ? [v] : [];
       for (const o of g.opcoes || []) {
@@ -476,6 +478,8 @@ export async function criaVisor(el, ficha, { base = '', reduz = matchMedia('(pre
         let op = o;
         if (o.igualA) { const gg = ficha.grupos.find((x) => x.id === o.igualA); const sel = gg?.opcoes.find((x) => x.id === estado[gg.id]); if (sel) op = { ...o, hex: sel.hex, acabamento: o.acabamento || sel.acabamento, _chave: sel.id }; }
         if (o.zona || g.zona) for (const zid of [].concat(o.zona || g.zona)) if (['cor', 'material'].includes(g.tipo)) pintaZona(zid, op, `${zid}|${g.id}`);
+        // «cores»: uma opção pinta várias zonas, cada uma com a sua cor (estofos de duas cores, edições especiais)
+        if (o.cores) for (const [zid, hex] of Object.entries(o.cores)) if (zonas[zid]) pintaZona(zid, { ...op, hex }, `${zid}|${g.id}`);
         if (g.tipo === 'ambiente') poeAmbiente(o.id);
       }
     }
@@ -488,6 +492,38 @@ export async function criaVisor(el, ficha, { base = '', reduz = matchMedia('(pre
       if (reduz || primeiraVez) { m.visible = quer; continue; } // a primeira vez não anima
       m.userData.fade = { de: m.visible ? 1 : 0, para: quer ? 1 : 0, t0: performance.now() };
       m.visible = true; fades.add(m);
+    }
+    // peças que se mexem (plataforma lateral que abre, mesa que desce): «move» numa opção roda e/ou desloca malhas.
+    // A rotação é à volta da origem da peça (a charneira, posta no modelo); graus e metros nos eixos do visor (Y = cima).
+    // Com «pivo» ([x,y,z] no visor) as peças vão para dentro de um grupo posto na charneira: roda bem mesmo depois de o
+    // meshopt mexer nas origens das peças ao comprimir.
+    const mov = new Map();
+    const alvosDe = (mv) => {
+      if (!mv.pivo) return visivel(mv.malhas);
+      const k = `${mv.malhas}@${mv.pivo}`;
+      if (!pivos.has(k)) {
+        const gr = new THREE.Group(); gr.name = `pivo:${mv.malhas}`; gr.position.set(...mv.pivo); barco.add(gr); gr.updateMatrixWorld(true);
+        for (const m of visivel(mv.malhas)) gr.attach(m);
+        pivos.set(k, gr);
+      }
+      return [pivos.get(k)];
+    };
+    for (const g of ficha.grupos) for (const o of g.opcoes || []) for (const mv of [].concat(o.move || [])) for (const m of alvosDe(mv)) {
+      m.userData.base ||= { p: m.position.clone(), r: m.rotation.clone() };
+      mov.has(m) || mov.set(m, { p: [0, 0, 0], r: [0, 0, 0] });
+    }
+    for (const g of ficha.grupos) {
+      const v = estado[g.id]; const ids = Array.isArray(v) ? v : v ? [v] : [];
+      for (const o of g.opcoes || []) if (ids.includes(o.id)) for (const mv of [].concat(o.move || [])) for (const m of alvosDe(mv)) {
+        const d = mov.get(m); (mv.roda || [0, 0, 0]).forEach((x, i) => (d.r[i] += x)); (mv.desloca || [0, 0, 0]).forEach((x, i) => (d.p[i] += x));
+      }
+    }
+    for (const [m, d] of mov) {
+      const b = m.userData.base, para = { p: b.p.clone().add(new THREE.Vector3(...d.p)), r: new THREE.Vector3(b.r.x, b.r.y, b.r.z).add(new THREE.Vector3(...d.r.map((x) => THREE.MathUtils.degToRad(x)))) };
+      if (m.position.distanceTo(para.p) < 1e-4 && new THREE.Vector3(m.rotation.x, m.rotation.y, m.rotation.z).distanceTo(para.r) < 1e-4) continue;
+      if (reduz || primeiraVez) { m.position.copy(para.p); m.rotation.set(para.r.x, para.r.y, para.r.z); continue; }
+      m.userData.mov = { de: { p: m.position.clone(), r: new THREE.Vector3(m.rotation.x, m.rotation.y, m.rotation.z) }, para, t0: performance.now() };
+      movs.add(m);
     }
     primeiraVez = false;
     for (const g of ficha.grupos) if (g.tipo === 'texto') escreveNome(estado[g.id], g.decal);
@@ -546,6 +582,14 @@ export async function criaVisor(el, ficha, { base = '', reduz = matchMedia('(pre
         const f = m.userData.fade, k = Math.max(0, Math.min(1, (t - f.t0) / 350)), v = f.de + (f.para - f.de) * ease(k);
         for (const x of [].concat(m.material)) { x.opacity = v * (x.userData.opacidade ?? 1); x.depthWrite = v > 0.95; }
         if (k >= 1) { m.visible = f.para === 1; for (const x of [].concat(m.material)) { x.opacity = x.userData.opacidade ?? 1; x.depthWrite = true; } delete m.userData.fade; fades.delete(m); }
+      }
+      corre = true;
+    }
+    if (movs.size) { // abrir e fechar devagar, como a peça a sério (900 ms)
+      for (const m of movs) {
+        const f = m.userData.mov, k = ease(Math.max(0, Math.min(1, (t - f.t0) / 900)));
+        m.position.lerpVectors(f.de.p, f.para.p, k); const r = f.de.r.clone().lerp(f.para.r, k); m.rotation.set(r.x, r.y, r.z);
+        if (k >= 1) { delete m.userData.mov; movs.delete(m); }
       }
       corre = true;
     }
